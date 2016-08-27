@@ -54,4 +54,9 @@ public class MathUtil {
 		float targetAngle = RotateAngle(VectorToAngle(start), VectorToAngle(end), angleDelta);
 		return AngleToVector(targetAngle) * startMagnitude;
 	}
+
+	public static bool SignsMatch(float val1, float val2)
+	{
+		return (val1 > 0 && val2 > 0) || (val1 == 0 && val2 == 0) || (val1 < 0 && val2 < 0);
+	}
 }

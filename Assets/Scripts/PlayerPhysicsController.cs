@@ -8,8 +8,11 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	public Vector3 Velocity;
 	private Vector3 acceleration;
 	public Vector3 Position;
+	public float DropSpeed = 5f;
 
-	public Vector3 Friction = new Vector3(20, 2);
+	public Vector3 GroundFriction = new Vector3(20, 2);
+	public Vector3 AirFriction = new Vector3(20, 2);
+
 	public Vector3 MaxSpeed = new Vector3(25, 20);
 	public float DodgeSpeed = 20;
 	public float GroundGravity = -20f;
@@ -18,10 +21,16 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	public float RaycastDist = .06f;
 	public int MaxDodgeFrames = 10;
 	public float JumpSpeed = 20f;
+	public float RotateThreshold = .3f;
 
 	public float SnapDist = .2f;
 
 	private float startZ;
+	private bool isDropping = false;
+
+	public bool CanFlip = true;
+	public bool CanDrop = true;
+	public bool CanRotate = true;
 	
 	public bool IsGrounded
 	{
@@ -113,19 +122,20 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		rightDot = Vector3.Dot(Velocity, Right);
 
 		// Lose velocity to friction
-		if ((lastDirectionHeld == 0)
-			&& IsGrounded
+		if ((lastDirectionHeld == 0 || !MathUtil.SignsMatch(acceleration.x, Vector3.Dot(Velocity, Right)))
 			&& Velocity.sqrMagnitude > .01f)
 		{
+			Vector2 Friction = IsGrounded ? GroundFriction : AirFriction;
+
 			if (rightDot > 0)
 			{
 				float upDot = Vector3.Dot(Velocity, Up);
-				Velocity = upDot * Up + (Vector3)(Mathf.Max(0, rightDot - Friction.x) * Right);
+				Velocity = upDot * Up + (Vector3)(Mathf.Max(0, rightDot - Friction.x * Time.fixedDeltaTime) * Right);
 			}
 			else if (rightDot < 0)
 			{
 				float upDot = Vector3.Dot(Velocity, Up);
-				Velocity = upDot * Up + (Vector3)(Mathf.Min(0, rightDot + Friction.x) * Right);
+				Velocity = upDot * Up + (Vector3)(Mathf.Min(0, rightDot + Friction.x * Time.fixedDeltaTime) * Right);
 			}
 		}
 
@@ -136,7 +146,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			RaycastHit2D hit = getHighestRaycastHit(Position, Up * -1, raycastDist, allTerrainMask);
 			if (hit.collider != null)
 			{
-				snapToSurface(hit, Up * -1);
+				IsGrounded = snapToSurface(hit, Up * -1);
 			}
 			else
 			{
@@ -171,25 +181,34 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		Position.z = startZ;
 	}
 
-	private void snapToSurface(RaycastHit2D hit, Vector3 velocityNormal)
+	private bool snapToSurface(RaycastHit2D hit, Vector3 velocityNormal)
 	{
+		bool success = Vector3.Dot(hit.normal, Up) >= RotateThreshold;
+
 		if (hit.distance == 0)
 		{
 			Debug.LogWarning("Collision with dist 0");
 		}
-		surface = hit.collider;
 
-		if (hit.collider.gameObject.layer == rotateGroundLayer)
-		{
-			Up = hit.normal;
-		}
-		else
-		{
-			Up = Vector3.up;
-		}
 
-		IsGrounded = true;
-		UncapSpeeds = false;
+		if (success)
+		{
+
+			surface = hit.collider;
+
+			if (hit.collider.gameObject.layer == rotateGroundLayer && CanRotate)
+			{
+				Up = hit.normal;
+			}
+			else
+			{
+				Up = Vector3.up;
+			}
+
+			isDropping = false;
+			IsGrounded = true;
+			UncapSpeeds = false;
+		}
 
 		Position += velocityNormal * (hit.distance - HoverDist);
 		Position.z = startZ;
@@ -200,6 +219,8 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		float dot = Vector3.Dot(Velocity, hit.normal);
 		Vector3 normalProjection = dot * hit.normal;
 		Velocity -= normalProjection;
+
+		return success;
 	}
 
 	private RaycastHit2D getHighestRaycastHit(Vector3 position,
@@ -284,7 +305,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 	public void Move(int direction)
 	{
-		if (direction == lastDirectionHeld)
+		if (direction == lastDirectionHeld || isDropping)
 		{
 			return;
 		}
@@ -294,9 +315,26 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		acceleration.x = speed;
 	}
 
-	
-	public void Flip()
+	public void BeginDrop()
 	{
+		if (!CanDrop || isDropping)
+		{
+			return;
+		}
+		isDropping = true;
+		SetUp(Vector3.up);
+		SetVelocity(new Vector3(0, -DropSpeed, 0));
+		acceleration = Vector3.zero;
+    }
+
+	
+	public bool Flip()
+	{
+		if (!CanFlip)
+		{
+			return false;
+		}
+
 		if (surface != null
 			&& surface.tag == Tags.FLIP)
 		{
@@ -307,7 +345,11 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			transform.position = newPos;
 			Up *= -1;
 			acceleration.x *= -1;
+
+			return true;
 		}
+
+		return false;
 
 	}
 

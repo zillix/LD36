@@ -5,6 +5,7 @@ using UnityEditor;
 public class PolygonColliderDecorator : DecoratorEditor
 {
 	private float rescaleamt = 1.0f;
+	private int rotateAmt = 90;
 	public PolygonColliderDecorator() : base("PolygonCollider2DEditor")
 	{ }
 
@@ -18,10 +19,16 @@ public class PolygonColliderDecorator : DecoratorEditor
 			collider.CenterPoints();
 		}
 
-		if (GUILayout.Button("Rotate Clockwise"))
+		EditorGUILayout.BeginHorizontal();
 		{
-			collider.RotatePoints(-90);
+			rotateAmt = EditorGUILayout.IntField("RotateAmt:", rotateAmt);
+			if (GUILayout.Button("Rotate Clockwise"))
+			{
+				collider.RotatePoints(-rotateAmt);
+			}
+
 		}
+		EditorGUILayout.EndHorizontal();
 
 		EditorGUILayout.BeginHorizontal();
 		{

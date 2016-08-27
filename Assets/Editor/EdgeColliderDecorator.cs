@@ -5,6 +5,7 @@ using UnityEditor;
 public class EdgeColliderDecorator : DecoratorEditor {
 
 	private float rescaleamt = 1.0f;
+	private int rotateAmt = 90;
 
 	public EdgeColliderDecorator() : base("EdgeCollider2DEditor")
 	{ }
@@ -19,12 +20,19 @@ public class EdgeColliderDecorator : DecoratorEditor {
 			collider.CenterPoints();
 		}
 
-		if (GUILayout.Button("Rotate Clockwise"))
-		{
-			collider.RotatePoints(-90);
-		}
-
 		EditorGUILayout.BeginHorizontal();
+		{
+			rotateAmt = EditorGUILayout.IntField("RotateAmt:", rotateAmt);
+			if (GUILayout.Button("Rotate Clockwise"))
+			{
+				collider.RotatePoints(-rotateAmt);
+			}
+
+		}
+		EditorGUILayout.EndHorizontal();
+		
+
+			EditorGUILayout.BeginHorizontal();
 		{
 			rescaleamt = EditorGUILayout.FloatField("Rescale:", rescaleamt);
 

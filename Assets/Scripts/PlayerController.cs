@@ -59,14 +59,24 @@ public class PlayerController : MonoBehaviour, ITickable {
 			Physics.SetVelocity(Physics.Velocity + Physics.Up * Physics.JumpSpeed);
 		}
 
+		bool didFlip = false;
 		if (Physics.IsGrounded
 				&& input.GetButtonDown(Button.Flip))
 		{
-			Physics.Flip();
+			didFlip = Physics.Flip();
+		}
+
+
+		if (didFlip)
+		{
 			facing = facing == Direction.Left ? Direction.Right : Direction.Left;
 			Side = IsInside ? Side.Outside : Side.Inside;
 		}
-    }
+		else if (input.GetButtonDown(Button.Flip))
+		{
+			Physics.BeginDrop();
+		}
+	}
 	
 	// Update is called once per frame
 	public void TickFrame () {
