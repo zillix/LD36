@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour, ITickable {
 	public Text frameText;
 	public CameraController mainCamera;
 
+	public TextManager text;
+
 	public string version = "v.1";
 	public float versionCountdown = 15f;
 

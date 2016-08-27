@@ -388,6 +388,8 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		}
 	}
 
+	public Vector3 Center {  get {  return Position + Up * Dimensions.y / 2; ; } }
+
 	public void SetVelocity(Vector3 velocity)
 	{
 		Velocity = velocity;
@@ -395,11 +397,10 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 	public void Move(int direction)
 	{
-		Vector3 center = Position + Up * Dimensions.y / 2;
 		// Don't accelerate into walls
 		 if (direction != 0 )
 		{
-			RaycastHit2D wallHit = Physics2D.Raycast(center, Right * direction, .05f, allTerrainMask);
+			RaycastHit2D wallHit = Physics2D.Raycast(Center, Right * direction, .05f, allTerrainMask);
 			if (wallHit.collider != null
 				&& Vector2.Dot(wallHit.normal, Right) < -.8f)
 			{

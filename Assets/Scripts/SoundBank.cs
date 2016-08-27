@@ -6,6 +6,7 @@ public class SoundBank : MonoBehaviour
 
 	public AudioSource player;
 
+	public AudioClip textBubble;
 
 	// Use this for initialization
 	void Start()

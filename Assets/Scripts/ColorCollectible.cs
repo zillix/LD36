@@ -1,40 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ColorCollectible : MonoBehaviour
+public class ColorCollectible : Collectible
 {
-	public static float COLLECT_DIST = 1;
 	public ColorType colorType;
-	private PlayerController player;
 
-	private bool collected = false;
-
-	void Start()
+	protected override void Start()
 	{
-		player = GameManager.instance.player;
+		base.Start();
 		GameManager.instance.RegisterColor(colorType);
 	}
 
-	void Update () {
-
-		if (collected)
-		{
-			return;
-		}
-
-		if (Vector2.Distance(player.transform.position, transform.position) < COLLECT_DIST)
-		{
-			collect();
-		}
-
-
-	}
-
-	private void collect()
+	protected override void collect()
 	{
-		collected = true;
 		GameManager.instance.CollectColor(colorType);
-		Destroy(gameObject);
+
+		base.collect();
 	}
 }
 
