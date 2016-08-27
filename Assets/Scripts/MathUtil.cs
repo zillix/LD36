@@ -59,4 +59,26 @@ public class MathUtil {
 	{
 		return (val1 > 0 && val2 > 0) || (val1 == 0 && val2 == 0) || (val1 < 0 && val2 < 0);
 	}
+
+	public static Vector3 RotateVector(Vector3 input, float rotateZDegrees)
+	{
+		// NOTE(alex): This just ignores the z coord entirely!
+
+		float cosine = Mathf.Cos(toRadians(rotateZDegrees));
+		float sine = Mathf.Sin(toRadians(rotateZDegrees));
+		return new Vector3(
+			cosine * input.x - sine * input.y,
+			sine * input.x + cosine * input.y,
+			input.z);
+	}
+
+	public static float toRadians(float degrees)
+	{
+		return degrees * Mathf.PI / 180;
+	}
+
+	public static float toDegrees(float radians)
+	{
+		return radians * 180 / Mathf.PI;
+	}
 }

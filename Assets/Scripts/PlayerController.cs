@@ -32,6 +32,10 @@ public class PlayerController : MonoBehaviour, ITickable {
 	public bool IsOutside { get { return Side == Side.Outside; } }
 	public Side Side { get; private set; }
 
+	private float currentAngle = 0;
+
+	public float RotationSpeed = 360;
+
 	public float ScaleSize = 2f;
 
 	void Awake()
@@ -113,7 +117,11 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		transform.position = Physics.Position;
 
-		Quaternion rotation = Quaternion.Euler(0, 0, MathUtil.VectorToAngle(RotationUp) - 90);
+		float targetAngle = MathUtil.VectorToAngle(RotationUp) - 90;
+		currentAngle = MathUtil.RotateAngle(currentAngle, targetAngle, RotationSpeed * Time.fixedDeltaTime);
+
+
+		Quaternion rotation = Quaternion.Euler(0, 0, currentAngle);
 		transform.rotation = rotation;
 	}
 
