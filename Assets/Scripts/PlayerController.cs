@@ -93,7 +93,11 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 			if (Input.GetKeyDown(KeyCode.J))
 			{
-				Physics.JumpSpeed *= 1.5f;
+				Physics.JumpSpeed *= 2f;
+			}
+			if (Input.GetKeyDown(KeyCode.K))
+			{
+				Physics.JumpSpeed *= .5f;
 			}
 
 
