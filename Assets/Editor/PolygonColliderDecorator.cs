@@ -5,7 +5,7 @@ using UnityEditor;
 public class PolygonColliderDecorator : DecoratorEditor
 {
 	private float rescaleamt = 1.0f;
-	public PolygonColliderDecorator() : base("PolygonCollider")
+	public PolygonColliderDecorator() : base("PolygonCollider2DEditor")
 	{ }
 
 	public override void OnInspectorGUI()

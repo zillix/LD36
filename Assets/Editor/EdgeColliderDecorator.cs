@@ -6,7 +6,7 @@ public class EdgeColliderDecorator : DecoratorEditor {
 
 	private float rescaleamt = 1.0f;
 
-	public EdgeColliderDecorator() : base("EdgeCollider")
+	public EdgeColliderDecorator() : base("EdgeCollider2DEditor")
 	{ }
 
 	public override void OnInspectorGUI()
