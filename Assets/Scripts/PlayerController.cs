@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 			facing = facing == Direction.Left ? Direction.Right : Direction.Left;
 			Side = IsInside ? Side.Outside : Side.Inside;
 		}
-		else if (input.GetButtonDown(Button.Flip))
+		else if (input.GetButtonDown(Button.Flip) && !IsInside)
 		{
 			Physics.BeginDrop();
 		}

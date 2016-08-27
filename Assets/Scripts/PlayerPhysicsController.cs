@@ -48,9 +48,11 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 	int groundLayer;
 	int rotateGroundLayer;
-	
+	int flipGroundLayer;
+
 	int groundLayerMask;
 	int rotateGroundLayerMask;
+	int flipGroundLayerMask;
 	int allTerrainMask;
 
 	public bool DisableGravity = false;
@@ -67,9 +69,11 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		Position = transform.position;
 		groundLayer = LayerMask.NameToLayer(LayerUtil.GROUND);
 		rotateGroundLayer = LayerMask.NameToLayer(LayerUtil.ROTATE_GROUND);
+		flipGroundLayer = LayerMask.NameToLayer(LayerUtil.FLIP_GROUND);
 		groundLayerMask = LayerUtil.GetLayerMask(LayerUtil.GROUND);
 		rotateGroundLayerMask = LayerUtil.GetLayerMask(LayerUtil.ROTATE_GROUND);
-		allTerrainMask = groundLayerMask | rotateGroundLayerMask;
+		flipGroundLayerMask = LayerUtil.GetLayerMask(LayerUtil.FLIP_GROUND);
+		allTerrainMask = groundLayerMask | rotateGroundLayerMask | flipGroundLayerMask;
 
 		startZ = transform.position.z;
 	}
@@ -115,6 +119,13 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			{
 				float upDot = Vector3.Dot(Velocity, Up);
 				Velocity = upDot * Up + (Vector3)(-maxSpeedX * Right);
+			}
+			rightDot = Vector3.Dot(Velocity, Right); // need to recalculate
+			float maxSpeedY = MaxSpeed.y;
+
+			if (Vector3.Dot(Up, Velocity) < -maxSpeedY)
+			{
+				Velocity = rightDot * Right + Up * -maxSpeedY;
 			}
 		}
 
@@ -196,7 +207,9 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 			surface = hit.collider;
 
-			if (hit.collider.gameObject.layer == rotateGroundLayer && CanRotate)
+			if ((hit.collider.gameObject.layer == rotateGroundLayer
+					|| hit.collider.gameObject.layer == flipGroundLayer)
+					&& CanRotate)
 			{
 				Up = hit.normal;
 			}
@@ -336,17 +349,27 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		}
 
 		if (surface != null
-			&& surface.tag == Tags.FLIP)
+			&& surface.gameObject.layer == flipGroundLayer)
 		{
+			RaycastHit2D obstructedHit = Physics2D.Raycast(transform.position, -Up, .3f, ~flipGroundLayerMask);
+			if (obstructedHit.collider == null)
+			{
 
-			Vector3 newPos = transform.position + Up * -.3f;
-			newPos.z = startZ;
-			Position = newPos;
-			transform.position = newPos;
-			Up *= -1;
-			acceleration.x *= -1;
 
-			return true;
+				Vector3 newPos = transform.position + Up * -.3f;
+				newPos.z = startZ;
+				Position = newPos;
+				transform.position = newPos;
+				Up *= -1;
+				acceleration.x *= -1;
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+
 		}
 
 		return false;

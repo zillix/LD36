@@ -5,6 +5,7 @@ public class LayerUtil {
 
 	public static string GROUND = "ground";
 	public static string ROTATE_GROUND = "rotateGround";
+	public static string FLIP_GROUND = "flipGround";
 
 	public static int GetLayerMask(string layerName)
 	{
@@ -13,7 +14,3 @@ public class LayerUtil {
 	}
 }
 
-public class Tags
-{
-	public static string FLIP = "flip";
-}
