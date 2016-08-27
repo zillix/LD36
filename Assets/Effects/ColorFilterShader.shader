@@ -31,7 +31,7 @@ Shader "zillix/Color Filter Shader" {
 
 
 	original.rgb.x = luminance + rDelta - gDelta / 2 - bDelta / 2;
-	original.rgb.y = luminance - rDelta / 2 + gDelta - gDelta / 2;
+	original.rgb.y = luminance - rDelta / 2 + gDelta - bDelta / 2;
 	original.rgb.z = luminance - rDelta / 2 - gDelta / 2 + bDelta;
 
 	return original;
