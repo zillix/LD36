@@ -61,14 +61,19 @@ public class PlayerController : MonoBehaviour, ITickable {
 	{
 		if (GameManager.DEBUG)
 		{
-			if (Input.GetKey(KeyCode.Space))
+			if (Input.GetKeyDown(KeyCode.Space))
 			{
 				GameManager.instance.mainCamera.Flash(Color.red);
 			}
 
-			if (Input.GetKey(KeyCode.R))
+			if (Input.GetKeyDown(KeyCode.R))
 			{
 				respawn();
+			}
+
+			if (Input.GetKeyDown(KeyCode.T))
+			{
+				GameManager.instance.mainCamera.Rotate = !GameManager.instance.mainCamera.Rotate;
 			}
 		}
 

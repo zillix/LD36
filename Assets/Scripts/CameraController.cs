@@ -29,6 +29,8 @@ public class CameraController : MonoBehaviour, ITickable {
 
 	public Image CameraFlash;
 
+	public bool Rotate = true;
+
 	private ColorFilter filter;
 
 
@@ -132,7 +134,25 @@ public class CameraController : MonoBehaviour, ITickable {
 		}
 
 		transform.position = newPos;
-		
+
+		if (Rotate)
+		{
+			float offset = 270f;
+
+			float targetAngle = MathUtil.VectorToAngle(player.Physics.Up) + offset;
+			if (player.IsInside)
+			{
+				//targetAngle += 180;
+			}
+			cameraAngle = MathUtil.RotateAngle(cameraAngle, targetAngle, lerpSpeed * Time.fixedDeltaTime);
+
+		}
+		else
+		{
+			cameraAngle = 0;
+		}
+		transform.rotation = Quaternion.Euler(0, 0, cameraAngle);
+
 	}
 
 	private Vector3 calculateTargetPosition()

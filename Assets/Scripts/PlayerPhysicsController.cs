@@ -31,7 +31,6 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	public float AirGravity = -20f;
 	public float HoverDist = .05f;
 	public float RaycastDist = .06f;
-	public int MaxDodgeFrames = 10;
 	public float JumpSpeed = 20f;
 	public float RotateThreshold = .3f;
 
@@ -285,6 +284,8 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		Vector3 normalProjection = dot * hit.normal;
 		Velocity -= normalProjection;
 
+		acceleration.x = lastDirectionHeld * MoveAcceleration;
+
 		return success;
 	}
 
@@ -363,10 +364,13 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 				distRemainingToTravel -= appliedHit.distance;
 
-				snapToSurface(appliedHit, Velocity.normalized);
+				bool didSnap = snapToSurface(appliedHit, Velocity.normalized);
 
-				// Restore the velocity to what it was before (effectively just rotating the velocity to parallel the surface)
-				Velocity = Velocity.normalized * cachedVelocityMagnitude;
+				if (didSnap)
+				{
+					// Restore the velocity to what it was before (effectively just rotating the velocity to parallel the surface)
+					Velocity = Velocity.normalized * cachedVelocityMagnitude;
+				}
 			}
 			else
 			{
@@ -391,6 +395,18 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 	public void Move(int direction)
 	{
+		Vector3 center = Position + Up * Dimensions.y / 2;
+		// Don't accelerate into walls
+		 if (direction != 0 )
+		{
+			RaycastHit2D wallHit = Physics2D.Raycast(center, Right * direction, .05f, allTerrainMask);
+			if (wallHit.collider != null
+				&& Vector2.Dot(wallHit.normal, Right) < -.8f)
+			{
+				direction = 0;
+			}
+		}
+
 		if (direction == lastDirectionHeld || IsDropping || IsStunned)
 		{
 			return;
@@ -418,9 +434,11 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		SetUp(Vector3.up);
 		SetVelocity(new Vector3(0, 0, 0));
 		acceleration = Vector3.zero;
-    }
+		lastDirectionHeld = 0;
 
-	
+	}
+
+
 	public bool Flip()
 	{
 		if (!CanFlip)
