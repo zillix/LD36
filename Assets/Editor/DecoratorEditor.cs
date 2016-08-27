@@ -28,7 +28,7 @@ public abstract class DecoratorEditor : Editor
 
 	#endregion
 
-	private static Dictionary<string, MethodInfo> decoratedMethods = new Dictionary<string, MethodInfo>();
+	private Dictionary<string, MethodInfo> decoratedMethods = new Dictionary<string, MethodInfo>();
 
 	private static Assembly editorAssembly = Assembly.GetAssembly(typeof(Editor));
 
