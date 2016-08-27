@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	public float MoveAcceleration = 20f;
+	public float AirAcceleration = 5f;
 
 
 	public Vector3 Velocity;
@@ -61,6 +62,11 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 	private GameObject leftBound;
 	private GameObject rightBound;
+
+
+
+	private Vector2 lastSafeUp;
+	private Vector3 lastSafePos;
 
 	void Awake()
 	{
@@ -190,6 +196,24 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 		Up = new Vector3(Up.x, Up.y, 0);
 		Position.z = startZ;
+
+		if (IsGrounded && !GameManager.instance.player.IsInside)
+		{
+			RaycastHit2D hit = Physics2D.Raycast(Position + .02f * Up, -1 * Up, .08f, allTerrainMask);
+            if (hit.collider != null)
+			{
+				lastSafePos = Position;
+				lastSafeUp = Up;
+			}
+		}
+	}
+
+	public void Respawn()
+	{
+		acceleration = Vector3.zero;
+		SetVelocity(Vector3.zero);
+		SetUp(lastSafeUp);
+		Position = lastSafePos;
 	}
 
 	private bool snapToSurface(RaycastHit2D hit, Vector3 velocityNormal)
@@ -324,7 +348,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		}
 
 		lastDirectionHeld = direction;
-		float speed = direction * MoveAcceleration;
+		float speed = direction * (IsGrounded ? MoveAcceleration : AirAcceleration);
 		acceleration.x = speed;
 	}
 

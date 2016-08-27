@@ -6,7 +6,7 @@ public class PolygonColliderDecorator : DecoratorEditor
 {
 	private float rescaleamt = 1.0f;
 	private int rotateAmt = 90;
-	private int grid = 32;
+	private float grid = .5f;
 	public PolygonColliderDecorator() : base("PolygonCollider2DEditor")
 	{ }
 
@@ -59,7 +59,7 @@ public class PolygonColliderDecorator : DecoratorEditor
 
 		EditorGUILayout.BeginHorizontal();
 		{
-			grid = EditorGUILayout.IntField("Grid:", grid);
+			grid = EditorGUILayout.FloatField("Grid:", grid);
 			if (GUILayout.Button("Align"))
 			{
 				collider.Align(grid);

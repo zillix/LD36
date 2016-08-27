@@ -76,7 +76,7 @@ public static class PolygonColliderExtensions
 		self.points = newPoints;
 	}
 
-	public static void Align(this PolygonCollider2D self, int grid)
+	public static void Align(this PolygonCollider2D self, float grid)
 	{
 		if (self.points.Length == 0)
 		{
@@ -89,6 +89,8 @@ public static class PolygonColliderExtensions
 			Vector2 point = self.points[i];
 			int mod = (int)(point.x % grid);
 			point.x = mod * grid + Mathf.RoundToInt((point.x - mod) / (float)grid) *grid;
+			mod = (int)(point.y % grid);
+			point.y = mod * grid + Mathf.RoundToInt((point.y - mod) / (float)grid) * grid;
 			newPoints[i] = point;
 		}
 

@@ -6,6 +6,7 @@ public class EdgeColliderDecorator : DecoratorEditor {
 
 	private float rescaleamt = 1.0f;
 	private int rotateAmt = 90;
+	private float grid = .5f;
 
 	public EdgeColliderDecorator() : base("EdgeCollider2DEditor")
 	{ }
@@ -53,6 +54,17 @@ public class EdgeColliderDecorator : DecoratorEditor {
 			if (GUILayout.Button("Flip Vertical"))
 			{
 				collider.Flip(false, true);
+			}
+		}
+		EditorGUILayout.EndHorizontal();
+
+
+		EditorGUILayout.BeginHorizontal();
+		{
+			grid = EditorGUILayout.FloatField("Grid:", grid);
+			if (GUILayout.Button("Align"))
+			{
+				collider.Align(grid);
 			}
 		}
 		EditorGUILayout.EndHorizontal();

@@ -75,4 +75,24 @@ public static class EdgeColliderExtensions
 
 		self.points = newPoints;
 	}
+	public static void Align(this EdgeCollider2D self, float grid)
+	{
+		if (self.points.Length == 0)
+		{
+			return;
+		}
+
+		Vector2[] newPoints = new Vector2[self.points.Length];
+		for (int i = 0; i < self.points.Length; ++i)
+		{
+			Vector2 point = self.points[i];
+			int mod = (int)(point.x % grid);
+			point.x = mod * grid + Mathf.RoundToInt((point.x - mod) / (float)grid) * grid;
+			mod = (int)(point.y % grid);
+			point.y = mod * grid + Mathf.RoundToInt((point.y - mod) / (float)grid) * grid;
+			newPoints[i] = point;
+		}
+
+		self.points = newPoints;
+	}
 }

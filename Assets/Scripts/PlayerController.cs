@@ -38,6 +38,9 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 	public float ScaleSize = 2f;
 
+	public int DeathFallFrames = 60;
+	private int fallingFrames = 0;
+
 	void Awake()
 	{
 		Side = Side.Outside;
@@ -56,9 +59,17 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 	void Update()
 	{
-		if (Input.GetKey(KeyCode.Space))
+		if (GameManager.DEBUG)
 		{
-			GameManager.instance.mainCamera.Flash();
+			if (Input.GetKey(KeyCode.Space))
+			{
+				GameManager.instance.mainCamera.Flash();
+			}
+
+			if (Input.GetKey(KeyCode.R))
+			{
+				respawn();
+			}
 		}
 
 		if (IsOutside
@@ -78,8 +89,10 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		if (didFlip)
 		{
+			rotate(10000);
 			facing = facing == Direction.Left ? Direction.Right : Direction.Left;
 			Side = IsInside ? Side.Outside : Side.Inside;
+
 		}
 		else if (input.GetButtonDown(Button.Flip) && !IsInside)
 		{
@@ -122,12 +135,36 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		transform.position = Physics.Position;
 
+		rotate(RotationSpeed);
+
+		if (Physics.IsGrounded)
+		{
+			fallingFrames = 0;
+		}
+		else
+		{
+			fallingFrames++;
+			if (fallingFrames == DeathFallFrames)
+			{
+				respawn();
+			}
+		}
+	}
+
+	private void rotate(float speed)
+	{
 		float targetAngle = MathUtil.VectorToAngle(RotationUp) - 90;
-		currentAngle = MathUtil.RotateAngle(currentAngle, targetAngle, RotationSpeed * Time.fixedDeltaTime);
+		currentAngle = MathUtil.RotateAngle(currentAngle, targetAngle, speed * Time.fixedDeltaTime);
 
 
 		Quaternion rotation = Quaternion.Euler(0, 0, currentAngle);
 		transform.rotation = rotation;
+	}
+
+	private void respawn()
+	{
+		Physics.Respawn();
+		Side = Side.Outside;
 	}
 
 	public Vector3 RotationUp
