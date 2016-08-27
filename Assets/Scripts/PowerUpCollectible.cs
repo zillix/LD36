@@ -1,15 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PowerUpCollectible : MonoBehaviour {
+public class PowerUpCollectible : Collectible {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	public PowerUpType Type;
+
+	protected override void collect()
+	{
+		base.collect();
+
+		GameManager.instance.player.CollectPowerUp(Type);
 	}
 }
+
+public enum PowerUpType
+{
+	Rotate,
+	Drop,
+	Flip
+}
+

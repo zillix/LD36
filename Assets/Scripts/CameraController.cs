@@ -21,6 +21,7 @@ public class CameraController : MonoBehaviour, ITickable {
 	private float cameraAngle = 0;
 	public float InsideOrtho = 60f;
 	public float OutsideOrtho = 120f;
+	public float ViewPointOrtho = 60f;
 
 	private Camera mainCamera;
 
@@ -32,6 +33,8 @@ public class CameraController : MonoBehaviour, ITickable {
 	public bool Rotate = true;
 
 	private ColorFilter filter;
+
+	private bool onViewPoint = false;
 
 
 
@@ -108,6 +111,10 @@ public class CameraController : MonoBehaviour, ITickable {
 		}
 
 		float targetOrthographicSize = player.IsInside ? InsideOrtho : OutsideOrtho;
+		if (onViewPoint)
+		{
+			targetOrthographicSize = ViewPointOrtho;
+		}
 
 		if (Mathf.Abs(mainCamera.orthographicSize - targetOrthographicSize) < Time.fixedDeltaTime * ZoomSpeed)
 		{
@@ -135,7 +142,7 @@ public class CameraController : MonoBehaviour, ITickable {
 
 		transform.position = newPos;
 
-		if (Rotate)
+		if (Rotate && player.Physics.CanRotate)
 		{
 			float offset = 270f;
 
@@ -194,6 +201,11 @@ public class CameraController : MonoBehaviour, ITickable {
 				image.color = color;
 			} //end for
 		}
+	}
+
+	public void SetViewPoint(bool onViewPoint)
+	{
+		this.onViewPoint = onViewPoint;
 	}
 
 	public void Flash(Color flashColor, Action callback = null)

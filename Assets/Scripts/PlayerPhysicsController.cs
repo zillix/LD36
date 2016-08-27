@@ -39,9 +39,18 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	private float startZ;
 	public bool IsDropping = false;
 
-	public bool CanFlip = true;
-	public bool CanDrop = true;
-	public bool CanRotate = true;
+	public bool CanFlip
+	{
+		get; set;
+	}
+	public bool CanDrop
+	{
+		get; set;
+	}
+	public bool CanRotate
+	{
+		get; set;
+	}
 	
 	public bool IsGrounded
 	{
@@ -49,11 +58,18 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	}
 
 	public Vector3 Up { get; private set; }
-	public Vector3 Right {  get { return new Vector3(Up.y, -Up.x, -Up.z); } }
+	public Vector3 Right {  get {
+			if (!IsGrounded && !CanRotate)
+			{
+				return new Vector3(1, 0, 0);
+			}
+
+			return new Vector3(Up.y, -Up.x, -Up.z); } }
 
 	public void SetUp(Vector3 up) { Up = up; }
 
 	private Collider2D surface = null;
+	private Vector2 surfaceNormal;
 
 	private int lastDirectionHeld = 0;
 
@@ -102,6 +118,11 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 	public void TickFrame()
 	{
+		if (!CanRotate && !IsGrounded)
+		{
+			Up = new Vector3(0, 1, 0);
+		}
+
 		if (IsDropping)
 		{
 			dropFrames--;
@@ -116,17 +137,20 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			stunFrames--;
 		}
 
+		Vector3 gravityUp = CanRotate ? (Vector2)Up : Vector2.up;
+
+
 		if (!DisableGravity && !IsDropping)
 		{
 			if (IsGrounded)
 			{
-				Velocity.x += GroundGravity * Up.x * Time.fixedDeltaTime;
-				Velocity.y += GroundGravity * Up.y * Time.fixedDeltaTime;
+				Velocity.x += GroundGravity * gravityUp.x * Time.fixedDeltaTime;
+				Velocity.y += GroundGravity * gravityUp.y * Time.fixedDeltaTime;
 			}
 			else
 			{
-				Velocity.x += AirGravity * Up.x * Time.fixedDeltaTime;
-				Velocity.y += AirGravity * Up.y * Time.fixedDeltaTime;
+				Velocity.x += AirGravity * gravityUp.x * Time.fixedDeltaTime;
+				Velocity.y += AirGravity * gravityUp.y * Time.fixedDeltaTime;
 			}
 		}
 
@@ -153,9 +177,9 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			rightDot = Vector3.Dot(Velocity, Right); // need to recalculate
 			float maxSpeedY = IsDropping ? DropMaxSpeed : MaxSpeed.y;
 
-			if (Vector3.Dot(Up, Velocity) < -maxSpeedY)
+			if (Vector3.Dot(gravityUp, Velocity) < -maxSpeedY)
 			{
-				Velocity = rightDot * Right + Up * -maxSpeedY;
+				Velocity = rightDot * Right +(Vector3) gravityUp * -maxSpeedY;
 			}
 		}
 
@@ -254,10 +278,11 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		{
 
 			surface = hit.collider;
+			surfaceNormal = hit.normal;
 
 			if ((hit.collider.gameObject.layer == rotateGroundLayer
 					|| hit.collider.gameObject.layer == flipGroundLayer)
-					&& CanRotate)
+					&& (CanRotate || Vector2.Dot(hit.normal, Vector2.up) > .3f))
 			{
 				Up = hit.normal;
 			}
@@ -279,10 +304,19 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		// Set position to the collision point
 		//position = hit.point;
 
-		// Cancel out velocity parallel to the normal
-		float dot = Vector3.Dot(Velocity, hit.normal);
-		Vector3 normalProjection = dot * hit.normal;
-		Velocity -= normalProjection;
+		if (CanRotate || Vector2.Dot(hit.normal, Vector2.up) > .4f)
+		{
+			// Cancel out velocity parallel to the normal
+			float dot = Vector3.Dot(Velocity, hit.normal);
+			Vector3 normalProjection = dot * hit.normal;
+			Velocity -= normalProjection;
+		}
+		else
+		{
+			// Only when not rotating, don't stick into walls
+			Velocity.x = 0;
+			Velocity.y = Mathf.Min(0, Velocity.y);
+		}
 
 		acceleration.x = lastDirectionHeld * MoveAcceleration;
 

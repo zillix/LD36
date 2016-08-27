@@ -75,13 +75,35 @@ public class PlayerController : MonoBehaviour, ITickable {
 			{
 				GameManager.instance.mainCamera.Rotate = !GameManager.instance.mainCamera.Rotate;
 			}
+
+			if (Input.GetKeyDown(KeyCode.Alpha1))
+			{
+				Physics.CanRotate = !Physics.CanRotate;
+			}
+
+			if (Input.GetKeyDown(KeyCode.Alpha2))
+			{
+				Physics.CanFlip = !Physics.CanFlip;
+			}
+
+			if (Input.GetKeyDown(KeyCode.Alpha3))
+			{
+				Physics.CanDrop = !Physics.CanDrop;
+			}
+
+			if (Input.GetKeyDown(KeyCode.J))
+			{
+				Physics.JumpSpeed *= 1.5f;
+			}
+
+
 		}
 
 		if (IsOutside
 			&& Physics.IsGrounded
 			&& input.GetButtonDown(Button.Up))
 		{
-			Physics.SetVelocity(Physics.Velocity + Physics.Up * Physics.JumpSpeed);
+			Physics.SetVelocity(Physics.Velocity + RotationUp * Physics.JumpSpeed);
 		}
 
 		bool didFlip = false;
@@ -185,7 +207,30 @@ public class PlayerController : MonoBehaviour, ITickable {
 				up *= -1;
 			}
 			return up;*/
+
+			if (!Physics.CanRotate)
+			{
+				return Vector2.up;
+			}
 			return Physics.Up;
 		}
+	}
+
+	public void CollectPowerUp(PowerUpType type)
+	{
+		switch (type)
+		{
+			case PowerUpType.Rotate:
+				Physics.CanRotate = true;
+				break;
+			case PowerUpType.Flip:
+				Physics.CanFlip = true;
+				break;
+			case PowerUpType.Drop:
+				Physics.CanDrop = true;
+				break;
+		}
+
+		GameManager.instance.mainCamera.Flash(Color.white);
 	}
 }
