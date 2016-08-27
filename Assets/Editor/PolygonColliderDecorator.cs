@@ -6,6 +6,7 @@ public class PolygonColliderDecorator : DecoratorEditor
 {
 	private float rescaleamt = 1.0f;
 	private int rotateAmt = 90;
+	private int grid = 32;
 	public PolygonColliderDecorator() : base("PolygonCollider2DEditor")
 	{ }
 
@@ -51,6 +52,17 @@ public class PolygonColliderDecorator : DecoratorEditor
 			if (GUILayout.Button("Flip Vertical"))
 			{
 				collider.Flip(false, true);
+			}
+		}
+		EditorGUILayout.EndHorizontal();
+
+
+		EditorGUILayout.BeginHorizontal();
+		{
+			grid = EditorGUILayout.IntField("Grid:", grid);
+			if (GUILayout.Button("Align"))
+			{
+				collider.Align(grid);
 			}
 		}
 		EditorGUILayout.EndHorizontal();
