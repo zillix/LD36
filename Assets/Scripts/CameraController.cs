@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
+
+using System;
 
 public class CameraController : MonoBehaviour, ITickable {
 
@@ -23,6 +26,10 @@ public class CameraController : MonoBehaviour, ITickable {
 	private float cameraShakeMagnitude;
 	private float cameraShakeFramesRemaining;
 
+	public Image CameraFlash;
+
+
+
 
 	// Use this for initialization
 	void Start () {
@@ -38,6 +45,7 @@ public class CameraController : MonoBehaviour, ITickable {
 	// Update is called once per frame
 	public void TickFrame()
 	{
+
 		int cullingMask = -1;
 
 		if (player.IsInside)
@@ -111,7 +119,7 @@ public class CameraController : MonoBehaviour, ITickable {
 		if (cameraShakeFramesRemaining > 0)
 		{
 			cameraShakeFramesRemaining--;
-			Vector3 shakeOffset = Random.Range(-cameraShakeMagnitude, cameraShakeMagnitude) * MathUtil.AngleToVector(Random.Range(-180, 180));
+			Vector3 shakeOffset = UnityEngine.Random.Range(-cameraShakeMagnitude, cameraShakeMagnitude) * MathUtil.AngleToVector(UnityEngine.Random.Range(-180, 180));
 			newPos += shakeOffset;
 		}
 
@@ -135,5 +143,46 @@ public class CameraController : MonoBehaviour, ITickable {
 	{
 		cameraShakeMagnitude = magnitude;
 		cameraShakeFramesRemaining = frames;
+	}
+
+	public IEnumerator Fade(float startAlpha,
+		float endAlpha,
+		float waitDuration,
+		Color color)
+	{
+		Image image = CameraFlash;
+		if (image.color.a == startAlpha)
+		{
+			color.a = startAlpha;
+			image.color = color;
+
+			for (float i = 0; i < 1.0; i += Time.deltaTime * (1 / waitDuration))
+			{ //for the length of time
+
+				color.a = Mathf.Lerp(startAlpha, endAlpha, i);
+				image.color = color;
+				yield return null;
+				color.a = endAlpha;
+				image.color = color;
+			} //end for
+		}
+	}
+
+	public void Flash(Action callback = null)
+	{
+		StartCoroutine(performFlash(Color.red, .3f, .01f, 1f, callback));
+    }
+
+	private IEnumerator performFlash(Color color, float fadeIn, float wait, float maxAlpha, Action callback = null)
+	{
+		StartCoroutine(Fade(0, 0.8f, fadeIn, color));
+		yield return new WaitForSeconds(fadeIn + wait);
+
+		if (callback != null)
+
+		{
+			callback();
+		}
+		StartCoroutine(Fade(0.8f, 0, fadeIn, color));
 	}
 }

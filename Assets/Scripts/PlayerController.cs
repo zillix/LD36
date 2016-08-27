@@ -56,6 +56,11 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 	void Update()
 	{
+		if (Input.GetKey(KeyCode.Space))
+		{
+			GameManager.instance.mainCamera.Flash();
+		}
+
 		if (IsOutside
 			&& Physics.IsGrounded
 			&& input.GetButtonDown(Button.Up))
