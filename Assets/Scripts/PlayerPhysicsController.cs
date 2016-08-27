@@ -1,15 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	public float MoveAcceleration = 20f;
 	public float AirAcceleration = 5f;
 
+	public Vector2 Dimensions = new Vector2(1, .5f);
 
 	public Vector3 Velocity;
 	private Vector3 acceleration;
 	public Vector3 Position;
-	public float DropSpeed = 5f;
+	public float DropAcceleration = 20f;
+	public float DropMaxSpeed = 5f;
+	private int dropFrames = 0;
+	public int DropDelayFrames = 30;
+	public int DropStunFrames = 20;
+	public int DropShakeFrames = 20;
+	public float DropShakeMagnitude = 1;
+
+	private int stunFrames = 0;
+	public bool IsStunned {  get { return stunFrames > 0; } }
 
 	public Vector3 GroundFriction = new Vector3(20, 2);
 	public Vector3 AirFriction = new Vector3(20, 2);
@@ -27,7 +38,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	public float SnapDist = .2f;
 
 	private float startZ;
-	private bool isDropping = false;
+	public bool IsDropping = false;
 
 	public bool CanFlip = true;
 	public bool CanDrop = true;
@@ -92,7 +103,21 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 	public void TickFrame()
 	{
-		if (!DisableGravity)
+		if (IsDropping)
+		{
+			dropFrames--;
+			if (dropFrames < 0)
+			{
+				Velocity.y += -DropAcceleration *Time.fixedDeltaTime;
+			}
+		}
+
+		if (stunFrames > 0)
+		{
+			stunFrames--;
+		}
+
+		if (!DisableGravity && !IsDropping)
 		{
 			if (IsGrounded)
 			{
@@ -127,7 +152,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 				Velocity = upDot * Up + (Vector3)(-maxSpeedX * Right);
 			}
 			rightDot = Vector3.Dot(Velocity, Right); // need to recalculate
-			float maxSpeedY = MaxSpeed.y;
+			float maxSpeedY = IsDropping ? DropMaxSpeed : MaxSpeed.y;
 
 			if (Vector3.Dot(Up, Velocity) < -maxSpeedY)
 			{
@@ -242,7 +267,10 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 				Up = Vector3.up;
 			}
 
-			isDropping = false;
+			if (IsDropping)
+			{
+				onDropLand();
+			}
 			IsGrounded = true;
 			UncapSpeeds = false;
 		}
@@ -258,6 +286,13 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		Velocity -= normalProjection;
 
 		return success;
+	}
+
+	private void onDropLand()
+	{
+		IsDropping = false;
+		stunFrames = DropStunFrames;
+		GameManager.instance.mainCamera.BeginCameraShake(DropShakeFrames, DropShakeMagnitude);
 	}
 
 	private RaycastHit2D getHighestRaycastHit(Vector3 position,
@@ -301,7 +336,21 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		while (maxIterations > 0
 			&& distRemainingToTravel > 0)
 		{
-			RaycastHit2D appliedHit = getHighestRaycastHit(Position, Velocity.normalized, distRemainingToTravel, allTerrainMask);
+			List<Vector3> startPoints = new List<Vector3>
+			{
+				Position,
+				Position + Up * Dimensions.y
+			};
+			RaycastHit2D appliedHit = new RaycastHit2D();
+			foreach (Vector3 point in startPoints)
+			{
+				RaycastHit2D hit = getHighestRaycastHit(point, Velocity.normalized, distRemainingToTravel, allTerrainMask);
+				if (hit.collider != null)
+				{
+					appliedHit = hit;
+					break;
+				}
+			}
 
 			if (appliedHit.collider != null && appliedHit.distance == 0)
 			{
@@ -342,7 +391,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 	public void Move(int direction)
 	{
-		if (direction == lastDirectionHeld || isDropping)
+		if (direction == lastDirectionHeld || IsDropping || IsStunned)
 		{
 			return;
 		}
@@ -354,13 +403,20 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 	public void BeginDrop()
 	{
-		if (!CanDrop || isDropping)
+		if (!CanDrop || IsDropping)
 		{
 			return;
 		}
-		isDropping = true;
+
+		if (IsGrounded && Vector2.Dot(Up, Vector2.down) <= 0)
+		{
+			return;
+		}
+
+		dropFrames = DropDelayFrames;
+		IsDropping = true;
 		SetUp(Vector3.up);
-		SetVelocity(new Vector3(0, -DropSpeed, 0));
+		SetVelocity(new Vector3(0, 0, 0));
 		acceleration = Vector3.zero;
     }
 
@@ -406,5 +462,8 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		GizmoUtil.GizmosDrawArrow(Position, Position + Velocity * .2f, Color.yellow);
 
 		GizmoUtil.GizmosDrawArrow(Position, Position + Up, Color.white);
+
+		Gizmos.color = Color.red;
+		Gizmos.DrawLine(Position, Position + Up * Dimensions.y);
 	}
 }

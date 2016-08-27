@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 		{
 			if (Input.GetKey(KeyCode.Space))
 			{
-				GameManager.instance.mainCamera.Flash();
+				GameManager.instance.mainCamera.Flash(Color.red);
 			}
 
 			if (Input.GetKey(KeyCode.R))
@@ -105,19 +105,22 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		bool invertControls = IsInside;
 
-		if (input.GetButton(Button.Left))
+		if (!Physics.IsStunned && !Physics.IsDropping)
 		{
-			Physics.Move(invertControls ? 1 : -1);
-			facing = invertControls ? Direction.Right : Direction.Left;
-		}
-		else if (input.GetButton(Button.Right))
-		{
-			Physics.Move(invertControls ? -1 : 1);
-			facing = invertControls ? Direction.Left : Direction.Right;
-		}
-		else
-		{
-			Physics.Move(0);
+			if (input.GetButton(Button.Left))
+			{
+				Physics.Move(invertControls ? 1 : -1);
+				facing = invertControls ? Direction.Right : Direction.Left;
+			}
+			else if (input.GetButton(Button.Right))
+			{
+				Physics.Move(invertControls ? -1 : 1);
+				facing = invertControls ? Direction.Left : Direction.Right;
+			}
+			else
+			{
+				Physics.Move(0);
+			}
 		}
 
 		if (facing == Direction.Left)
@@ -141,7 +144,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 		{
 			fallingFrames = 0;
 		}
-		else
+		else if (!Physics.IsDropping)
 		{
 			fallingFrames++;
 			if (fallingFrames == DeathFallFrames)

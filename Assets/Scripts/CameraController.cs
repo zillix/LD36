@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityStandardAssets.ImageEffects;
 
 using System;
 
@@ -28,6 +29,7 @@ public class CameraController : MonoBehaviour, ITickable {
 
 	public Image CameraFlash;
 
+	private ColorFilter filter;
 
 
 
@@ -40,6 +42,12 @@ public class CameraController : MonoBehaviour, ITickable {
 		transform.position = newPos;
 		mainCamera = GetComponent<Camera>();
 		mainCamera.orthographicSize = InsideOrtho;
+		filter = GetComponent<ColorFilter>();
+	}
+
+	public void SetFilterColor(Color color)
+	{
+		filter.filter = color;
 	}
 
 	// Update is called once per frame
@@ -168,9 +176,9 @@ public class CameraController : MonoBehaviour, ITickable {
 		}
 	}
 
-	public void Flash(Action callback = null)
+	public void Flash(Color flashColor, Action callback = null)
 	{
-		StartCoroutine(performFlash(Color.red, .3f, .01f, 1f, callback));
+		StartCoroutine(performFlash(flashColor, .3f, .01f, 1f, callback));
     }
 
 	private IEnumerator performFlash(Color color, float fadeIn, float wait, float maxAlpha, Action callback = null)
