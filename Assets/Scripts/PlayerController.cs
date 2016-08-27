@@ -59,8 +59,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 			Physics.SetVelocity(Physics.Velocity + Physics.Up * Physics.JumpSpeed);
 		}
 
-		if (!Physics.IsDodging
-			&& Physics.IsGrounded
+		if (Physics.IsGrounded
 				&& input.GetButtonDown(Button.Flip))
 		{
 			Physics.Flip();

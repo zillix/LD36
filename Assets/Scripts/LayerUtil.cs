@@ -12,3 +12,8 @@ public class LayerUtil {
 		return 1 << layer;
 	}
 }
+
+public class Tags
+{
+	public static string FLIP = "flip";
+}

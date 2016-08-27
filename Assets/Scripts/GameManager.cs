@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour, ITickable {
 	public static int FPS = 60;
 
-	public static bool DEBUG = false;
+	public static bool DEBUG = true;
 
 	public static GameManager instance;
 
