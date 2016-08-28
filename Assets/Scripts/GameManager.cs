@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour, ITickable {
 	public static int FPS = 60;
@@ -148,6 +149,6 @@ public class GameManager : MonoBehaviour, ITickable {
 
 	private void restartGame()
 	{
-
+		SceneManager.LoadScene(0);
 	}
 }
