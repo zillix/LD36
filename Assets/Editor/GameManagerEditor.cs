@@ -42,11 +42,16 @@ public class GameManagerEditor : Editor {
 				ColliderToMesh[] allMeshes = GameObject.FindObjectsOfType<ColliderToMesh>();
 				foreach (ColliderToMesh colMesh in allMeshes)
 				{
+					float gridForThis = grid;
+					if (colMesh.gameObject.GetComponent<Collectible>() != null)
+					{
+						gridForThis *= .5f;
+					}
 					Vector2 point = colMesh.transform.position;
-					int mod = (int)(point.x % grid);
-					point.x = mod * grid + Mathf.RoundToInt((point.x - mod) / (float)grid) * grid;
-					mod = (int)(point.y % grid);
-					point.y = mod * grid + Mathf.RoundToInt((point.y - mod) / (float)grid) * grid;
+					int mod = (int)(point.x % gridForThis);
+					point.x = mod * gridForThis + Mathf.RoundToInt((point.x - mod) / (float)gridForThis) * gridForThis;
+					mod = (int)(point.y % gridForThis);
+					point.y = mod * gridForThis + Mathf.RoundToInt((point.y - mod) / (float)gridForThis) * gridForThis;
 					colMesh.transform.position = point;
 				}
 			}
