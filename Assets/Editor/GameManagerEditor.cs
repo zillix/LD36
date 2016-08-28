@@ -4,7 +4,7 @@ using UnityEngine;
 [CustomEditor(typeof(GameManager))]
 public class GameManagerEditor : Editor {
 
-	private float grid = .5f;
+	private float grid = 1f;
 
 	public override void OnInspectorGUI()
 	{
@@ -16,6 +16,21 @@ public class GameManagerEditor : Editor {
 			foreach (ColliderToMesh colMesh in allMeshes)
 			{
 				colMesh.CreateMesh();
+			}
+		}
+
+		if (GUILayout.Button("Center all Meshes"))
+		{
+			PolygonCollider2D[] allCol = GameObject.FindObjectsOfType<PolygonCollider2D>();
+			foreach (PolygonCollider2D colMesh in allCol)
+			{
+				colMesh.CenterPoints();
+			}
+
+			EdgeCollider2D[] allEdg = GameObject.FindObjectsOfType<EdgeCollider2D>();
+			foreach (EdgeCollider2D colMesh in allEdg)
+			{
+				colMesh.CenterPoints();
 			}
 		}
 

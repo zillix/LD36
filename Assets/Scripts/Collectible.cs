@@ -8,6 +8,8 @@ public class Collectible : MonoBehaviour
 
 	private bool collected = false;
 
+	public static float ROTATE_SPEED = 60;
+
 	protected virtual void Start()
 	{
 		player = GameManager.instance.player;
@@ -25,6 +27,8 @@ public class Collectible : MonoBehaviour
 		{
 			collect();
 		}
+
+		transform.Rotate(new Vector3(0, 0, -ROTATE_SPEED * Time.fixedDeltaTime));
 
 
 	}
