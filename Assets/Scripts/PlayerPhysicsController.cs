@@ -57,6 +57,8 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		get; set;
 	}
 
+	public bool Jumped { get; set; }
+
 	public Vector3 Up { get; private set; }
 	public Vector3 Right {  get {
 			if (!IsGrounded && !CanRotate)
@@ -177,9 +179,9 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			rightDot = Vector3.Dot(Velocity, Right); // need to recalculate
 			float maxSpeedY = IsDropping ? DropMaxSpeed : MaxSpeed.y;
 
-			if (Vector3.Dot(gravityUp, Velocity) < -maxSpeedY)
+			if (Vector3.Dot(Up, Velocity) < -maxSpeedY)
 			{
-				Velocity = rightDot * Right +(Vector3) gravityUp * -maxSpeedY;
+				Velocity = rightDot * Right +(Vector3) Up * -maxSpeedY;
 			}
 		}
 
@@ -276,6 +278,8 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 
 		if (success)
 		{
+			Jumped = false;
+
 
 			surface = hit.collider;
 			surfaceNormal = hit.normal;
@@ -484,7 +488,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		if (surface != null
 			&& surface.gameObject.layer == flipGroundLayer)
 		{
-			RaycastHit2D obstructedHit = Physics2D.Raycast(transform.position, -Up, .3f, ~flipGroundLayerMask);
+			RaycastHit2D obstructedHit = Physics2D.Raycast(transform.position, -Up, .3f, groundLayerMask | rotateGroundLayerMask);
 			if (obstructedHit.collider == null)
 			{
 

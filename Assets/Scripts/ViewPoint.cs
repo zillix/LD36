@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ViewPoint : MonoBehaviour
 {
-	public static float COLLECT_DIST = 2.5f;
+	public float CollectDist = 2f;
 	private PlayerController player;
 
 	protected virtual void Start()
@@ -16,7 +16,7 @@ public class ViewPoint : MonoBehaviour
 	protected virtual void Update()
 	{
 
-		if (Vector2.Distance(player.Physics.Center, transform.position) < COLLECT_DIST)
+		if (Vector2.Distance(player.Physics.Center, transform.position) < CollectDist)
 		{
 			GameManager.instance.mainCamera.SetViewPoint(true);
 		}
@@ -29,6 +29,6 @@ public class ViewPoint : MonoBehaviour
 		Color color = Color.cyan;
 		color.a = .3f;
 		Gizmos.color = color;
-		Gizmos.DrawSphere(transform.position, COLLECT_DIST);
+		Gizmos.DrawSphere(transform.position, CollectDist);
 	}
 }

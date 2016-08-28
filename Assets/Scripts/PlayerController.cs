@@ -104,10 +104,14 @@ public class PlayerController : MonoBehaviour, ITickable {
 		}
 
 		if (IsOutside
-			&& Physics.IsGrounded
+			&& (Physics.IsGrounded ||
+				(!Physics.Jumped && Vector3.Dot(Physics.Velocity, Physics.Up * -1) > 0
+					&& Vector3.Dot(Physics.Velocity, Physics.Up * -1) < 1f))
 			&& input.GetButtonDown(Button.Up))
 		{
-			Physics.SetVelocity(Physics.Velocity + RotationUp * Physics.JumpSpeed);
+			Physics.SetVelocity(RotationUp * Physics.JumpSpeed);
+			Physics.IsGrounded = false;
+			Physics.Jumped = true;
 		}
 
 		bool didFlip = false;
@@ -134,7 +138,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 	// Update is called once per frame
 	public void TickFrame () {
 
-		bool invertControls = IsInside;
+		bool invertControls = false;
 
 		if (!Physics.IsStunned && !Physics.IsDropping)
 		{
@@ -175,10 +179,11 @@ public class PlayerController : MonoBehaviour, ITickable {
 		{
 			fallingFrames = 0;
 		}
-		else if (!Physics.IsDropping)
+		else if (!Physics.IsDropping
+			&& Vector3.Dot(Physics.Velocity, Physics.Up) < 0)
 		{
 			fallingFrames++;
-			if (fallingFrames == DeathFallFrames)
+			if (fallingFrames >= DeathFallFrames)
 			{
 				respawn();
 			}
@@ -199,6 +204,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 	{
 		Physics.Respawn();
 		Side = Side.Outside;
+		fallingFrames = 0;
 	}
 
 	public Vector3 RotationUp

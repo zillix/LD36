@@ -26,6 +26,7 @@ public class ColliderToMesh : MonoBehaviour
 		if (collider is EdgeCollider2D)
 		{
 			path = (collider as EdgeCollider2D).points;
+			path[0].x += .01f;
 		}
 		else if (collider is PolygonCollider2D)
 		{
