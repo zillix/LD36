@@ -20,10 +20,6 @@ public class ViewPoint : MonoBehaviour
 		{
 			GameManager.instance.mainCamera.SetViewPoint(true);
 		}
-		else
-		{
-			GameManager.instance.mainCamera.SetViewPoint(false);
-		}
 
 
 	}

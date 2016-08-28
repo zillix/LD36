@@ -304,18 +304,18 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		// Set position to the collision point
 		//position = hit.point;
 
-		if (CanRotate || Vector2.Dot(hit.normal, Vector2.up) > .4f)
+		//if (CanRotate || Vector2.Dot(hit.normal, Vector2.up) > .4f)
 		{
 			// Cancel out velocity parallel to the normal
 			float dot = Vector3.Dot(Velocity, hit.normal);
 			Vector3 normalProjection = dot * hit.normal;
 			Velocity -= normalProjection;
 		}
-		else
+		//else
 		{
 			// Only when not rotating, don't stick into walls
-			Velocity.x = 0;
-			Velocity.y = Mathf.Min(0, Velocity.y);
+			//Velocity.x = 0;
+			//Velocity.y = Mathf.Min(0, Velocity.y);
 		}
 
 		acceleration.x = lastDirectionHeld * MoveAcceleration;

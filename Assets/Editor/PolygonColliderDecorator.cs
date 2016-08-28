@@ -6,7 +6,7 @@ public class PolygonColliderDecorator : DecoratorEditor
 {
 	private float rescaleamt = 1.0f;
 	private int rotateAmt = 90;
-	private float grid = .5f;
+	private float grid = 1f;
 	public PolygonColliderDecorator() : base("PolygonCollider2DEditor")
 	{ }
 

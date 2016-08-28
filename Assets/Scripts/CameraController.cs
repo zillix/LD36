@@ -160,6 +160,7 @@ public class CameraController : MonoBehaviour, ITickable {
 		}
 		transform.rotation = Quaternion.Euler(0, 0, cameraAngle);
 
+		onViewPoint = false;
 	}
 
 	private Vector3 calculateTargetPosition()

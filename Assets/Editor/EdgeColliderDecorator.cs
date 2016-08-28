@@ -6,7 +6,7 @@ public class EdgeColliderDecorator : DecoratorEditor {
 
 	private float rescaleamt = 1.0f;
 	private int rotateAmt = 90;
-	private float grid = .5f;
+	private float grid = 1;
 
 	public EdgeColliderDecorator() : base("EdgeCollider2DEditor")
 	{ }

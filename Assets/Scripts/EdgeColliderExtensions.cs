@@ -17,10 +17,19 @@ public static class EdgeColliderExtensions
 		}
 		center /= self.points.Length;
 
+		Vector2 furthestPoint = self.points[0];
+		foreach (Vector2 point in self.points)
+		{
+			if (Vector2.Distance(center, point) > Vector2.Distance(center, furthestPoint))
+			{
+				furthestPoint = point;
+			}
+		}
+
 		Vector2[] newPoints = new Vector2[self.points.Length];
 		for (int i = 0; i < self.points.Length; ++i)
 		{
-			newPoints[i] = self.points[i] - center;
+			newPoints[i] = self.points[i] - furthestPoint;
 		}
 
 		self.points = newPoints;
