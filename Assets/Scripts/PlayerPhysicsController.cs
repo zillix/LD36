@@ -247,7 +247,9 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		Up = new Vector3(Up.x, Up.y, 0);
 		Position.z = startZ;
 
-		if (IsGrounded && !GameManager.instance.player.IsInside)
+		if (IsGrounded && !GameManager.instance.player.IsInside
+			&& !GameManager.instance.player.IsFallingDead
+			&& !GameManager.instance.player.IsCollapsed)
 		{
 			RaycastHit2D hit = Physics2D.Raycast(Position + .02f * Up, -1 * Up, .08f, allTerrainMask);
             if (hit.collider != null)
@@ -299,8 +301,14 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			{
 				onDropLand();
 			}
-			IsGrounded = true;
 			UncapSpeeds = false;
+
+			if (!IsGrounded)
+			{
+				GameManager.instance.player.OnLand();
+				IsGrounded = true;
+
+			}
 		}
 
 		Position += velocityNormal * (hit.distance - HoverDist);

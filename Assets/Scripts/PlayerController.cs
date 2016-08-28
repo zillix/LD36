@@ -39,7 +39,15 @@ public class PlayerController : MonoBehaviour, ITickable {
 	public float ScaleSize = 2f;
 
 	public int DeathFallFrames = 60;
+	public int ContinueDeathFallFrames = 20;
+	public int CollapseFrames = 60;
 	private int fallingFrames = 0;
+
+	private int collapsedFrames = 0;
+	public bool IsCollapsed { get; set; }
+
+	public bool IsFallingDead {
+		get; set; }
 
 	public bool DisableJumping { get; set; }
 
@@ -146,7 +154,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		bool invertControls = temporarilyInvertingControls;
 
-		if (!Physics.IsStunned && !Physics.IsDropping)
+		if (!Physics.IsStunned && !Physics.IsDropping && !IsFallingDead && !IsCollapsed)
 		{
 			if (input.GetButton(Button.Left))
 			{
@@ -192,9 +200,39 @@ public class PlayerController : MonoBehaviour, ITickable {
 			fallingFrames++;
 			if (fallingFrames >= DeathFallFrames)
 			{
+				IsFallingDead = true;
+			}
+			else if (fallingFrames >= DeathFallFrames + ContinueDeathFallFrames)
+			{
 				respawn();
 			}
 		}
+
+		if (IsCollapsed)
+		{
+			collapsedFrames++;
+			if (collapsedFrames >= CollapseFrames)
+			{
+				respawn();
+			}
+		}
+	}
+
+	public void OnLand()
+	{
+		if (IsFallingDead)
+		{
+			Collapse();
+			GameManager.instance.mainCamera.BeginCameraShake(
+				Physics.DropShakeFrames,
+				Physics.DropShakeMagnitude);
+		}
+	}
+
+	public void Collapse()
+	{
+		IsCollapsed = true;
+		
 	}
 
 	private void rotate(float speed)
@@ -212,6 +250,10 @@ public class PlayerController : MonoBehaviour, ITickable {
 		Physics.Respawn();
 		Side = Side.Outside;
 		fallingFrames = 0;
+		collapsedFrames = 0;
+		fallingFrames = 0;
+		IsFallingDead = false;
+		IsCollapsed = false;
 	}
 
 	public Vector3 RotationUp
