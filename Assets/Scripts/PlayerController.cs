@@ -166,7 +166,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		bool invertControls = temporarilyInvertingControls;
 
-		if (!Physics.IsDropping && !IsFallingDead && !IsCollapsed
+		if (!Physics.IsDropping && !IsCollapsed
 			&& GameManager.instance.hasStartedGame)
 		{
 			if (!Physics.IsStunned)
@@ -191,6 +191,10 @@ public class PlayerController : MonoBehaviour, ITickable {
 			{
 				Physics.Move(0);
 			}
+		}
+		else
+		{
+			Physics.Move(0);
 		}
 
 		if (facing == Direction.Left)
