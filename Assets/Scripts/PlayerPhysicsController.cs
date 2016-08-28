@@ -464,24 +464,32 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		acceleration.x = speed;
 	}
 
-	public void BeginDrop()
+	public bool BeginDrop()
 	{
 		if (!CanDrop || IsDropping)
 		{
-			return;
+			return false;
 		}
 
 		if (IsGrounded && Vector2.Dot(Up, Vector2.down) <= 0)
 		{
-			return;
+			return false;
+		}
+
+		if (IsGrounded)
+		{
+			Position += Dimensions.y * Up; 
+
 		}
 
 		dropFrames = DropDelayFrames;
 		IsDropping = true;
+		IsGrounded = false;
 		SetUp(Vector3.up);
-		SetVelocity(new Vector3(0, 0, 0));
+		SetVelocity(new Vector3(0, -.01f, 0));
 		acceleration = Vector3.zero;
 		lastDirectionHeld = 0;
+		return true;
 
 	}
 

@@ -126,7 +126,7 @@ public class ViewPoint : MonoBehaviour
 				enqueue(msgs, "forecastle");
 				enqueue(msgs, "status: disappointed");
 				break;
-			case Message.Secret:
+			case Message.SecretRoof:
 				enqueue(msgs, "landing pad");
 				enqueue(msgs, "status: anxious");
 				break;
@@ -136,7 +136,7 @@ public class ViewPoint : MonoBehaviour
 				break;
 			case Message.ShipLeft:
 				enqueue(msgs, "error: unrecognized format");
-				enqueue(msgs, "suggestion: reformat occupants");
+				enqueue(msgs, "suggestion: reformat occupantsq");
 				break;
 			case Message.ShipRight:
 				enqueue(msgs, "error: ");
@@ -146,6 +146,18 @@ public class ViewPoint : MonoBehaviour
 				enqueue(msgs, "wqq", GameManager.instance.TriggerEndGame);
 				enqueue(msgs, "wqq");
 				enqueue(msgs, "status: anxious");
+				break;
+			case Message.ShipSecret:
+				enqueue(msgs, "ship secret");
+				break;
+			case Message.SecretAlcove:
+				enqueue(msgs, "secret alcove");
+				break;
+			case Message.SecretStart:
+				enqueue(msgs, "secret alcove");
+				break;
+			case Message.SecretDrop:
+				enqueue(msgs, "secret drop");
 				break;
 		}
 
@@ -159,10 +171,10 @@ public class ViewPoint : MonoBehaviour
 
 	void OnDrawGizmos()
 	{
-	/*	Color color = Color.cyan;
+		Color color = Color.cyan;
 		color.a = .3f;
 		Gizmos.color = color;
-		Gizmos.DrawSphere(transform.position, CollectDist);*/
+		Gizmos.DrawSphere(transform.position, CollectDist);
 	}
 }
 
@@ -174,9 +186,13 @@ public enum Message
 	Flip,
 	Loop,
 	Top,
-	Secret,
+	SecretRoof,
 	ShipLeft,
 	ShipCenter,
 	ShipRight,
-	Victory
+	Victory,
+	SecretDrop,
+	ShipSecret,
+	SecretAlcove,
+	SecretStart
 }

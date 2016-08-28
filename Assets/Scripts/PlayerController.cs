@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 	public int DeathFallFrames = 60;
 	public int ContinueDeathFallFrames = 20;
 	public int CollapseFrames = 60;
+	public int DropDeathFrames = 60;
 	private int fallingFrames = 0;
 
 	private int collapsedFrames = 0;
@@ -145,7 +146,13 @@ public class PlayerController : MonoBehaviour, ITickable {
 		}
 		else if (input.GetButtonDown(Button.Flip) && !IsInside)
 		{
-			Physics.BeginDrop();
+			bool didDrop = Physics.BeginDrop();
+			if (didDrop)
+			{
+				rotate(10000);
+
+			}
+
 		}
 	}
 	
@@ -194,17 +201,18 @@ public class PlayerController : MonoBehaviour, ITickable {
 		{
 			fallingFrames = 0;
 		}
-		else if (!Physics.IsDropping
-			&& Vector3.Dot(Physics.Velocity, Physics.Up) < 0)
+		else if (Vector3.Dot(Physics.Velocity, Physics.Up) < 0)
 		{
+			int deathFallFrames = Physics.IsDropping ? DropDeathFrames : DeathFallFrames;
+
 			fallingFrames++;
-			if (fallingFrames >= DeathFallFrames)
+			if (fallingFrames >= deathFallFrames)
 			{
 				IsFallingDead = true;
-			}
-			else if (fallingFrames >= DeathFallFrames + ContinueDeathFallFrames)
-			{
-				respawn();
+				if (fallingFrames >= deathFallFrames + ContinueDeathFallFrames)
+				{
+					respawn();
+				}
 			}
 		}
 
