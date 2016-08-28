@@ -6,6 +6,8 @@ public class SoundBank : MonoBehaviour
 
 	public AudioSource player;
 
+	public AudioClip ambientTheme;
+
 	public AudioClip textBubble;
 	public AudioClip jump;
 	public AudioClip flip;

@@ -28,7 +28,9 @@ public class Collectible : MonoBehaviour
 			return;
 		}
 
-		if (Vector2.Distance(player.Physics.Center, transform.position) < COLLECT_DIST)
+		if (!player.IsFallingDead
+			&& !player.IsCollapsed
+			&& Vector2.Distance(player.Physics.Center, transform.position) < COLLECT_DIST)
 		{
 			collect();
 		}

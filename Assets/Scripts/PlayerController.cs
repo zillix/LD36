@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 			&& !Physics.IsStunned
 			&& (Physics.IsGrounded ||
 				(!Physics.Jumped && Vector3.Dot(Physics.Velocity, Physics.Up * -1) > 0
-					&& Vector3.Dot(Physics.Velocity, Physics.Up * -1) < 1f))
+					&& Vector3.Dot(Physics.Velocity, Physics.Up * -1) < 2f))
 			&& input.GetButtonDown(Button.Up))
 		{
 			sounds.player.PlayOneShot(sounds.jump);

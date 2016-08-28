@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour, ITickable {
 	public TextManager text;
 	public Text zillixText;
 
-	public string version = "v0.3";
+	public string version = "v0.35";
 	public float versionCountdown = 15f;
 
 	public FrameController frameController;
