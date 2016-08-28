@@ -149,6 +149,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 			bool didDrop = Physics.BeginDrop();
 			if (didDrop)
 			{
+				fallingFrames = 0;
 				rotate(10000);
 
 			}
@@ -201,7 +202,8 @@ public class PlayerController : MonoBehaviour, ITickable {
 		{
 			fallingFrames = 0;
 		}
-		else if (Vector3.Dot(Physics.Velocity, Physics.Up) < 0)
+		else if (Vector3.Dot(Physics.Velocity, Physics.Up) < 0
+			&& (!Physics.IsDropping || Physics.dropFrames <= 0))
 		{
 			int deathFallFrames = Physics.IsDropping ? DropDeathFrames : DeathFallFrames;
 

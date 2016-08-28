@@ -13,7 +13,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	public Vector3 Position;
 	public float DropAcceleration = 20f;
 	public float DropMaxSpeed = 5f;
-	private int dropFrames = 0;
+	public int dropFrames { get; set; }
 	public int DropDelayFrames = 30;
 	public int DropStunFrames = 20;
 	public int DropShakeFrames = 20;
@@ -266,6 +266,8 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		SetVelocity(Vector3.zero);
 		SetUp(lastSafeUp);
 		Position = lastSafePos;
+		IsDropping = false;
+
 	}
 
 	private bool snapToSurface(RaycastHit2D hit, Vector3 velocityNormal)
@@ -471,7 +473,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			return false;
 		}
 
-		if (IsGrounded && Vector2.Dot(Up, Vector2.down) <= 0)
+		if (IsGrounded && Vector2.Dot(Up, Vector2.down) < -.03)
 		{
 			return false;
 		}
