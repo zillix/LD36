@@ -14,11 +14,13 @@ public class GameManager : MonoBehaviour, ITickable {
 	public PlayerController player;
 	public Text fpsText;
 	public Text frameText;
+	public Image title;
 	public CameraController mainCamera;
 
 	public TextManager text;
+	public Text zillixText;
 
-	public string version = "v.1";
+	public string version = "v0.3";
 	public float versionCountdown = 15f;
 
 	public FrameController frameController;
@@ -34,6 +36,8 @@ public class GameManager : MonoBehaviour, ITickable {
 
 	public bool RotateGravity = true;
 	public Vector3 Up {  get { return player.Physics.Up; } }
+
+	public bool hasStartedGame { get; set; }
 
 	public void Awake()
 	{
@@ -56,7 +60,7 @@ public class GameManager : MonoBehaviour, ITickable {
 
 	public void TickFrame()
 	{
-		if (versionText != null)
+		if (versionText != null && !hasStartedGame)
 		{
 
 			versionCountdown -= Time.fixedDeltaTime;
@@ -66,15 +70,36 @@ public class GameManager : MonoBehaviour, ITickable {
 				versionAlpha.a += Time.fixedDeltaTime;
 				versionText.color = versionAlpha;
 				versionText.text = version;
+
+			
 			}
 		}
 
-		player.TickFrame();
+		if (hasStartedGame)
+		{
+			Color titleColor = title.color;
+			titleColor.a -= Time.fixedDeltaTime;
+			title.color = titleColor;
 
+			Color zillixColor = zillixText.color;
+			zillixColor.a -= Time.fixedDeltaTime;
+			zillixText.color = zillixColor;
+
+			
+		}
+		else if (Input.anyKeyDown)
+		{
+			hasStartedGame = true;
+			mainCamera.StartGame();
+		}
+		player.TickFrame();
 		mainCamera.TickFrame();
 
-		fpsText.text = "FPS: " + fpsCounter.FPS;
-		frameText.text = "Current Frame: " + frameController.currentFrame;
+		if (DEBUG)
+		{
+			fpsText.text = "FPS: " + fpsCounter.FPS;
+			frameText.text = "Current Frame: " + frameController.currentFrame;
+		}
 	}
 
 

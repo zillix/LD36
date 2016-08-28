@@ -46,6 +46,12 @@ public class CameraController : MonoBehaviour, ITickable {
 	public bool IsGameOver { get; set; }
 	private bool reachedEndGame = false;
 
+	public bool hasStartedGame { get; set; }
+
+	private Color currentFilterColor = Color.red;
+	public static float COLOR_SPEED = .5f;
+	public int increasingColorIndex = 1;
+
 
 
 	// Use this for initialization
@@ -68,9 +74,52 @@ public class CameraController : MonoBehaviour, ITickable {
 		filter.filter = color;
 	}
 
+	public void StartGame()
+	{
+		hasStartedGame = true;
+		SetFilterColor(Color.black);
+	}
+
 	// Update is called once per frame
 	public void TickFrame()
 	{
+
+		if (!hasStartedGame)
+		{
+			Color nextColor = currentFilterColor;
+			switch (increasingColorIndex)
+			{
+				case 0:
+					nextColor.r += Time.fixedDeltaTime * COLOR_SPEED;
+					nextColor.b -= Time.fixedDeltaTime * COLOR_SPEED;
+					if (nextColor.r >= 1)
+					{
+						increasingColorIndex = 1;
+					}
+					break;
+
+				case 1:
+					nextColor.g += Time.fixedDeltaTime * COLOR_SPEED;
+					nextColor.r -= Time.fixedDeltaTime * COLOR_SPEED;
+					if (nextColor.g >= 1)
+					{
+						increasingColorIndex = 2;
+					}
+					break;
+
+				case 2:
+					nextColor.b += Time.fixedDeltaTime * COLOR_SPEED;
+					nextColor.g -= Time.fixedDeltaTime * COLOR_SPEED;
+					if (nextColor.b >= 1)
+					{
+						increasingColorIndex = 0;
+					}
+					break;
+
+			}
+			currentFilterColor = nextColor;
+			SetFilterColor(nextColor);
+		}
 
 		if (IsGameOver && transform.position.y > topBound.y && !reachedEndGame)
 		{
