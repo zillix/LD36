@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class PlayText {
 
 	public string text;
 	public float duration;
-	public delegate void Callback(); 
-	public Callback callback;
+	public Action callback;
 	public bool skippable;
 
 	public static float DEFAULT_DURATION = 3f;
 
-	public PlayText(string Text = "", float Duration = -1, Callback callbackFn = null, bool skippable = true)
+	public PlayText(string Text = "", float Duration = -1, Action callbackFn = null, bool skippable = true)
 	{
 		if (Duration < 0) {
 			Duration = DEFAULT_DURATION;
@@ -23,7 +23,7 @@ public class PlayText {
 		this.skippable = skippable;
 	}
 
-	public static void addText(List<PlayText> textList, string text,float duration = -1, Callback callback = null, bool skippable = true)
+	public static void addText(List<PlayText> textList, string text,float duration = -1, Action callback = null, bool skippable = true)
 	{
 		if (duration < 0) {
 			duration = DEFAULT_DURATION;

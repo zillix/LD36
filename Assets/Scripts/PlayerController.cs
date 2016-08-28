@@ -41,6 +41,10 @@ public class PlayerController : MonoBehaviour, ITickable {
 	public int DeathFallFrames = 60;
 	private int fallingFrames = 0;
 
+	public bool DisableJumping { get; set; }
+
+	private bool temporarilyInvertingControls = false;
+
 	void Awake()
 	{
 		Side = Side.Outside;
@@ -104,6 +108,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 		}
 
 		if (IsOutside
+			&& !DisableJumping
 			&& (Physics.IsGrounded ||
 				(!Physics.Jumped && Vector3.Dot(Physics.Velocity, Physics.Up * -1) > 0
 					&& Vector3.Dot(Physics.Velocity, Physics.Up * -1) < 1f))
@@ -124,6 +129,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		if (didFlip)
 		{
+			temporarilyInvertingControls = true;
 			rotate(10000);
 			facing = facing == Direction.Left ? Direction.Right : Direction.Left;
 			Side = IsInside ? Side.Outside : Side.Inside;
@@ -138,7 +144,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 	// Update is called once per frame
 	public void TickFrame () {
 
-		bool invertControls = false;
+		bool invertControls = temporarilyInvertingControls;
 
 		if (!Physics.IsStunned && !Physics.IsDropping)
 		{
@@ -154,6 +160,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 			}
 			else
 			{
+				temporarilyInvertingControls = false;
 				Physics.Move(0);
 			}
 		}

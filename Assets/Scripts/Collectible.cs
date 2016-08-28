@@ -10,6 +10,11 @@ public class Collectible : MonoBehaviour
 
 	public static float ROTATE_SPEED = 60;
 
+	public static float PULSE_MAX_SIZE = 1.3f;
+	public static float PULSE_ROTATE_SPEED = 60f;
+
+	private float pulseAngle = 0;
+
 	protected virtual void Start()
 	{
 		player = GameManager.instance.player;
@@ -28,7 +33,12 @@ public class Collectible : MonoBehaviour
 			collect();
 		}
 
-		transform.Rotate(new Vector3(0, 0, -ROTATE_SPEED * Time.fixedDeltaTime));
+		float rotateSpeed = -ROTATE_SPEED * Time.fixedDeltaTime;
+        transform.Rotate(new Vector3(0,0, rotateSpeed));
+
+		pulseAngle += Time.fixedDeltaTime * PULSE_ROTATE_SPEED;
+		float scale = Mathf.Max(1, PULSE_MAX_SIZE * Mathf.Sin(MathUtil.toRadians(pulseAngle)));
+		transform.localScale = Vector3.one * scale;
 
 
 	}

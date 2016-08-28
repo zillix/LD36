@@ -134,4 +134,20 @@ public class GameManager : MonoBehaviour, ITickable {
 			mainCamera.SetFilterColor(newFilterColor);
 		});
 	}
+
+	public void TriggerEndGame()
+	{
+		mainCamera.IsGameOver = true;
+		player.DisableJumping = true;
+	}
+
+	public void TriggerFadeOut()
+	{
+		mainCamera.Flash(Color.black, restartGame, 1f, 2f, 1f);
+	}
+
+	private void restartGame()
+	{
+
+	}
 }

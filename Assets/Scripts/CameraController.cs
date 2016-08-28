@@ -22,6 +22,7 @@ public class CameraController : MonoBehaviour, ITickable {
 	public float InsideOrtho = 60f;
 	public float OutsideOrtho = 120f;
 	public float ViewPointOrtho = 60f;
+	public float VictoryOrtho = 130f;
 
 	private Camera mainCamera;
 
@@ -36,6 +37,15 @@ public class CameraController : MonoBehaviour, ITickable {
 
 	private bool onViewPoint = false;
 
+	ViewPoint[] viewPoints;
+
+	public float VictorySpeed = 5;
+
+	private Vector3 topBound;
+
+	public bool IsGameOver { get; set; }
+	private bool reachedEndGame = false;
+
 
 
 	// Use this for initialization
@@ -48,6 +58,9 @@ public class CameraController : MonoBehaviour, ITickable {
 		mainCamera = GetComponent<Camera>();
 		mainCamera.orthographicSize = InsideOrtho;
 		filter = GetComponent<ColorFilter>();
+
+		viewPoints = FindObjectsOfType<ViewPoint>();
+		topBound = (GameObject.Find("TopBound") as GameObject).transform.position;
 	}
 
 	public void SetFilterColor(Color color)
@@ -59,7 +72,28 @@ public class CameraController : MonoBehaviour, ITickable {
 	public void TickFrame()
 	{
 
+		if (IsGameOver && transform.position.y > topBound.y && !reachedEndGame)
+		{
+			reachedEndGame = true;
+			GameManager.instance.TriggerFadeOut();
+		}
+
 		int cullingMask = -1;
+
+		onViewPoint = false;
+		foreach (ViewPoint point in viewPoints)
+		{
+			if (point.message == Message.Victory)
+			{
+				continue;
+			}
+
+			if (Vector2.Distance(player.Physics.Center, point.transform.position) < point.CollectDist)
+			{
+				onViewPoint = true;
+				break;
+			}
+		}
 
 		if (player.IsInside)
 		{
@@ -115,6 +149,10 @@ public class CameraController : MonoBehaviour, ITickable {
 		{
 			targetOrthographicSize = ViewPointOrtho;
 		}
+		if (IsGameOver)
+		{
+			targetOrthographicSize = VictoryOrtho;
+		}
 
 		if (Mathf.Abs(mainCamera.orthographicSize - targetOrthographicSize) < Time.fixedDeltaTime * ZoomSpeed)
 		{
@@ -160,12 +198,16 @@ public class CameraController : MonoBehaviour, ITickable {
 		}
 		transform.rotation = Quaternion.Euler(0, 0, cameraAngle);
 
-		onViewPoint = false;
+		
 	}
 
 	private Vector3 calculateTargetPosition()
 	{
 		Vector3 targetPosition = player.transform.position;
+		if (IsGameOver)
+		{
+			targetPosition = transform.position + new Vector3(0, 10000);
+		}
 
 		Vector2 offset = player.IsInside ? InsideOffset : OutsideOffset;
 		
@@ -209,14 +251,14 @@ public class CameraController : MonoBehaviour, ITickable {
 		this.onViewPoint = onViewPoint;
 	}
 
-	public void Flash(Color flashColor, Action callback = null)
+	public void Flash(Color flashColor, Action callback = null, float fadeIn = .3f, float wait = .01f, float maxAlpha = .8f)
 	{
-		StartCoroutine(performFlash(flashColor, .3f, .01f, 1f, callback));
+		StartCoroutine(performFlash(flashColor, fadeIn, wait, maxAlpha, callback));
     }
 
 	private IEnumerator performFlash(Color color, float fadeIn, float wait, float maxAlpha, Action callback = null)
 	{
-		StartCoroutine(Fade(0, 0.8f, fadeIn, color));
+		StartCoroutine(Fade(0, maxAlpha, fadeIn, color));
 		yield return new WaitForSeconds(fadeIn + wait);
 
 		if (callback != null)
@@ -224,6 +266,6 @@ public class CameraController : MonoBehaviour, ITickable {
 		{
 			callback();
 		}
-		StartCoroutine(Fade(0.8f, 0, fadeIn, color));
+		StartCoroutine(Fade(maxAlpha, 0, fadeIn, color));
 	}
 }

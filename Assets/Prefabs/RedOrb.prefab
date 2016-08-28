@@ -9,11 +9,11 @@ GameObject:
   m_Component:
   - 4: {fileID: 486544}
   - 222: {fileID: 22233952}
-  - 60: {fileID: 6080928}
   - 33: {fileID: 3316142}
   - 23: {fileID: 2300624}
-  - 114: {fileID: 11450434}
   - 114: {fileID: 11462872}
+  - 64: {fileID: 6448930}
+  - 114: {fileID: 11490802}
   m_Layer: 0
   m_Name: RedOrb
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 112352}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -76.241684, y: -11.53178, z: 0.5}
+  m_LocalPosition: {x: -95.241684, y: -4.5317802, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -66,36 +66,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 112352}
   m_Mesh: {fileID: 0}
---- !u!60 &6080928
-PolygonCollider2D:
+--- !u!64 &6448930
+MeshCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 112352}
-  m_Enabled: 1
-  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  m_Points:
-    m_Paths:
-    - - {x: 0.027359009, y: 0.46352482}
-      - {x: 0.36950684, y: -0.16706371}
-      - {x: -0.3303604, y: -0.16741848}
---- !u!114 &11450434
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 112352}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5260c0fb7e85524da88730a42522b77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Reverse: 0
-  ReverseNormals: 0
+  serializedVersion: 2
+  m_Convex: 0
+  m_Mesh: {fileID: 0}
 --- !u!114 &11462872
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -108,6 +90,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorType: 0
+--- !u!114 &11490802
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 112352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92773282ae3207842b8b9c8e35cfe644, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedVertices: 0
 --- !u!222 &22233952
 CanvasRenderer:
   m_ObjectHideFlags: 1

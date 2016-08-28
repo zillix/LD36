@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class TextManager : MonoBehaviour {
 
@@ -30,13 +31,13 @@ public class TextManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.anyKeyDown
+		/*if (Input.anyKeyDown
 			&& currentText != null
 			&& currentText.skippable)
 		{
 			advanceText();
 			return;
-		}
+		}*/
 
 
 		if (currentText != null) {
@@ -70,7 +71,7 @@ public class TextManager : MonoBehaviour {
 		textQueue.AddRange (text);
 	}
 
-	public void enqueue(string text, float duration = -1, PlayText.Callback callback = null, bool skippable = true)
+	public void enqueue(string text, float duration = -1, Action callback = null, bool skippable = true)
 	{
 		textQueue.Add (new PlayText (text, duration, callback, skippable));
 	}
