@@ -34,6 +34,19 @@ Shader "zillix/Color Filter Shader" {
 	original.rgb.y = luminance - rDelta / 2 + gDelta - bDelta / 2;
 	original.rgb.z = luminance - rDelta / 2 - gDelta / 2 + bDelta;
 
+	/*fixed4 original = tex2D(_MainTex, i.uv);
+	float luminance = (original.rgb.r + original.rgb.b + original.rgb.g);
+	float rScale = original.rgb.r * _FilterColor.r;
+	float gScale = original.rgb.g * _FilterColor.g;
+	float bScale = original.rgb.b * _FilterColor.b;
+	float totalLumin = rScale + gScale + bScale;
+	float luminOffset = (luminance - totalLumin) / 3;
+
+
+	original.rgb.x = luminOffset + rScale;
+	original.rgb.y = luminOffset + gScale;
+	original.rgb.z = luminOffset + bScale;*/
+
 	return original;
 	}
 		ENDCG
