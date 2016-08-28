@@ -126,6 +126,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 					&& Vector3.Dot(Physics.Velocity, Physics.Up * -1) < 1f))
 			&& input.GetButtonDown(Button.Up))
 		{
+			sounds.player.PlayOneShot(sounds.jump);
 			Physics.SetVelocity(RotationUp * Physics.JumpSpeed);
 			Physics.IsGrounded = false;
 
@@ -137,11 +138,14 @@ public class PlayerController : MonoBehaviour, ITickable {
 				&& input.GetButtonDown(Button.Flip))
 		{
 			didFlip = Physics.Flip();
+
 		}
 
 
 		if (didFlip)
 		{
+
+			sounds.player.PlayOneShot(sounds.flip);
 			temporarilyInvertingControls = true;
 			rotate(10000);
 			facing = facing == Direction.Left ? Direction.Right : Direction.Left;
@@ -155,6 +159,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 			{
 				fallingFrames = 0;
 				rotate(10000);
+				sounds.player.PlayOneShot(sounds.drop);
 
 			}
 
@@ -236,7 +241,12 @@ public class PlayerController : MonoBehaviour, ITickable {
 			fallingFrames++;
 			if (fallingFrames >= deathFallFrames)
 			{
-				IsFallingDead = true;
+				if (!IsFallingDead)
+				{
+					IsFallingDead = true;
+					sounds.player.PlayOneShot(sounds.fallToDeath);
+
+				}
 				if (fallingFrames >= deathFallFrames + ContinueDeathFallFrames)
 				{
 					respawn();
@@ -262,6 +272,12 @@ public class PlayerController : MonoBehaviour, ITickable {
 			GameManager.instance.mainCamera.BeginCameraShake(
 				Physics.DropShakeFrames,
 				Physics.DropShakeMagnitude);
+
+			sounds.player.PlayOneShot(sounds.heavyLand);
+		}
+		else if (GameManager.instance.hasStartedGame)
+		{
+			sounds.player.PlayOneShot(sounds.land);
 		}
 	}
 
@@ -290,6 +306,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 		fallingFrames = 0;
 		IsFallingDead = false;
 		IsCollapsed = false;
+		sounds.player.PlayOneShot(sounds.respawn);
 	}
 
 	public Vector3 RotationUp
@@ -313,6 +330,8 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 	public void CollectPowerUp(PowerUpType type)
 	{
+
+		sounds.player.PlayOneShot(sounds.collectPowerUp);
 		switch (type)
 		{
 			case PowerUpType.Rotate:

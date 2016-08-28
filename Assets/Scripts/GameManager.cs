@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour, ITickable {
 	private Vector3 colorCollected = new Vector3();
 	public Vector3 totalColors = new Vector3();
 
+	public SoundBank sounds;
+
 
 	public bool RotateGravity = true;
 	public Vector3 Up {  get { return player.Physics.Up; } }
@@ -45,6 +47,7 @@ public class GameManager : MonoBehaviour, ITickable {
 		frameController = gameObject.AddComponent<FrameController>();
 		frameController.game = this;
 		fpsCounter = GetComponent<FPSCounter>();
+
     }
 
 	public void Start()
@@ -55,6 +58,8 @@ public class GameManager : MonoBehaviour, ITickable {
 			c.a = 0;
 			versionText.color = c;
 		}
+
+		sounds = GameObject.Find("SoundBank").GetComponent<SoundBank>();
 	}
 	
 
@@ -122,6 +127,8 @@ public class GameManager : MonoBehaviour, ITickable {
 
 	public void CollectColor(ColorType color)
 	{
+		sounds.player.PlayOneShot(sounds.collectColor);
+
 		switch (color)
 		{
 			case ColorType.Red:

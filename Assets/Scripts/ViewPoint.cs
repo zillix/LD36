@@ -37,10 +37,11 @@ public class ViewPoint : MonoBehaviour
 
 		if (Vector2.Distance(player.Physics.Center, transform.position) < CollectDist)
 		{
-			if (!displayedMessage)
+			displayedMessage = true;
+
+			if (!displayedMessage && !GameManager.instance.text.isBusy)
 			{
 				GameManager.instance.text.enqueue(getMessage(message));
-				displayedMessage = true;
 			}
 		}
 		else

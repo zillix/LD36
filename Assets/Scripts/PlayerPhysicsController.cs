@@ -341,6 +341,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	{
 		IsDropping = false;
 		stunFrames = DropStunFrames;
+		GameManager.instance.sounds.player.PlayOneShot(GameManager.instance.sounds.heavyLand);
 		GameManager.instance.mainCamera.BeginCameraShake(DropShakeFrames, DropShakeMagnitude);
 	}
 
