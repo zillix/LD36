@@ -118,6 +118,9 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		if (IsOutside
 			&& !DisableJumping
+			&& !IsCollapsed
+			&& !IsFallingDead
+			&& !Physics.IsStunned
 			&& (Physics.IsGrounded ||
 				(!Physics.Jumped && Vector3.Dot(Physics.Velocity, Physics.Up * -1) > 0
 					&& Vector3.Dot(Physics.Velocity, Physics.Up * -1) < 1f))
@@ -125,6 +128,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 		{
 			Physics.SetVelocity(RotationUp * Physics.JumpSpeed);
 			Physics.IsGrounded = false;
+
 			Physics.Jumped = true;
 		}
 
@@ -162,22 +166,29 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		bool invertControls = temporarilyInvertingControls;
 
-		if (!Physics.IsStunned && !Physics.IsDropping && !IsFallingDead && !IsCollapsed
+		if (!Physics.IsDropping && !IsFallingDead && !IsCollapsed
 			&& GameManager.instance.hasStartedGame)
 		{
-			if (input.GetButton(Button.Left))
+			if (!Physics.IsStunned)
 			{
-				Physics.Move(invertControls ? 1 : -1);
-				facing = invertControls ? Direction.Right : Direction.Left;
-			}
-			else if (input.GetButton(Button.Right))
-			{
-				Physics.Move(invertControls ? -1 : 1);
-				facing = invertControls ? Direction.Left : Direction.Right;
+				if (input.GetButton(Button.Left))
+				{
+					Physics.Move(invertControls ? 1 : -1);
+					facing = invertControls ? Direction.Right : Direction.Left;
+				}
+				else if (input.GetButton(Button.Right))
+				{
+					Physics.Move(invertControls ? -1 : 1);
+					facing = invertControls ? Direction.Left : Direction.Right;
+				}
+				else
+				{
+					temporarilyInvertingControls = false;
+					Physics.Move(0);
+				}
 			}
 			else
 			{
-				temporarilyInvertingControls = false;
 				Physics.Move(0);
 			}
 		}
@@ -193,7 +204,17 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		Physics.TickFrame();
 
-		animator.SetFloat("Speed", Mathf.Abs(Physics.Velocity.magnitude));
+		animator.SetFloat("Speed", Mathf.Abs(Vector3.Dot(Physics.Velocity, Physics.Right)));
+
+		float fallSpeed = 0;
+		if (Vector3.Dot(Physics.Up, Physics.Velocity) < -.1)
+		{
+			fallSpeed = 1;
+		}
+		animator.SetFloat("FallSpeed", fallSpeed);
+		animator.SetBool("Collapsing", IsCollapsed);
+		animator.SetBool("FallToDeath", IsFallingDead);
+		animator.SetBool("Jumped", !Physics.IsGrounded);
 
 		transform.position = Physics.Position;
 
