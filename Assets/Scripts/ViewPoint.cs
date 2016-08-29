@@ -103,6 +103,10 @@ public class ViewPoint : MonoBehaviour
 
 	public List<PlayText> getMessage(Message msg)
 	{
+		Vector3 total = GameManager.instance.totalColors;
+		Vector3 collected = GameManager.instance.colorCollected;
+
+
 		List<PlayText> msgs = new List<PlayText>();
 		switch (msg)
 		{
@@ -110,57 +114,93 @@ public class ViewPoint : MonoBehaviour
 				enqueue(msgs, "default");
 				break;
 			case Message.Intro:
-				enqueue(msgs, "wheelhouse");
-				enqueue(msgs, "status: tired");
+				enqueue(msgs, "-captain's quarters-");
+				enqueue(msgs, "status: happily concerned");
 				break;
 			case Message.Center:
-				enqueue(msgs, "engine room");
-				enqueue(msgs, "status: confused");
+				enqueue(msgs, "-research center-");
+				string status = "chromatic reconstruction status: ";
+				for (int i = 0; i < collected.x; ++i)
+				{
+					status += i < total.x ? "R" : "r";
+				}
+				for (int i = 0; i < collected.y; ++i)
+				{
+					status += i < total.y ? "G" : "g";
+				}
+				for (int i = 0; i < collected.z; ++i)
+				{
+					status += i < total.z ? "B" : "r";
+
+				}
+				enqueue(msgs, status);
 				break;
 			case Message.Flip:
-				enqueue(msgs, "brig");
-				enqueue(msgs, "status: astray");
+				enqueue(msgs, "-brig-");
+				enqueue(msgs, "epiphany status: in progress");
 				break;
 			case Message.Loop:
-				enqueue(msgs, "cargo hold");
-				enqueue(msgs, "status: lonely");
+				enqueue(msgs, "-cargo hold-");
+				enqueue(msgs, "status: plundered");
 				break;
 			case Message.Top:
-				enqueue(msgs, "forecastle");
-				enqueue(msgs, "status: disappointed");
+				enqueue(msgs, "-forecastle-");
+				enqueue(msgs, "status: wishing for a better view");
 				break;
 			case Message.SecretRoof:
-				enqueue(msgs, "landing pad");
-				enqueue(msgs, "status: anxious");
+				enqueue(msgs, "-landing pad-");
+				enqueue(msgs, "status: confused about purpose");
 				break;
 			case Message.ShipCenter:
-				enqueue(msgs, "error: unrecognized species");
-				enqueue(msgs, "suggestion: reformat inhabitants");
+				enqueue(msgs, "error: occupant type unrecognized");
+				enqueue(msgs, "suggestion: reformat occupant");
 				break;
 			case Message.ShipLeft:
-				enqueue(msgs, "error: unrecognized format");
-				enqueue(msgs, "suggestion: reformat occupantsq");
+				enqueue(msgs, "praise the sun!");
 				break;
 			case Message.ShipRight:
-				enqueue(msgs, "error: ");
-				enqueue(msgs, "status: anxious");
+				enqueue(msgs, "starting adventure...");
+				enqueue(msgs, "adventure failed to start");
 				break;
 			case Message.Victory:
-				enqueue(msgs, "wqq", GameManager.instance.TriggerEndGame);
-				enqueue(msgs, "wqq");
-				enqueue(msgs, "status: anxious");
+				int totalAmt = (int)( total.x + total.y + total.z);
+				int collectedAmt = (int)( collected.x + collected.y + collected.z);
+				string ackStatus = "chromatic acknowledgement status:";
+				if (collectedAmt == 0)
+				{
+					ackStatus += " in denial";
+				}
+				else if (collectedAmt < totalAmt / 2)
+				{
+					ackStatus += " adequate";
+				}
+				else if (collectedAmt < totalAmt)
+				{
+					ackStatus += " vivid";
+                }
+				else
+				{
+					ackStatus += " fully accepted";
+				}
+				enqueue(msgs, "-departure chamber-");
+				enqueue(msgs, "disengaging...", GameManager.instance.TriggerEndGame);
+				enqueue(msgs, "undocking status: success");
+				enqueue(msgs, ackStatus);
 				break;
-			case Message.ShipSecret:
+			/*case Message.ShipSecret:
 				enqueue(msgs, "ship secret");
-				break;
+				break;*/
 			case Message.SecretAlcove:
-				enqueue(msgs, "secret alcove");
+				enqueue(msgs, "-remote rudder-");
+				enqueue(msgs, "status: it's complicated");
 				break;
 			case Message.SecretStart:
-				enqueue(msgs, "secret alcove");
+				enqueue(msgs, "-satellite buoy-");
+				enqueue(msgs, "status: single and loving it!");
 				break;
 			case Message.SecretDrop:
-				enqueue(msgs, "secret drop");
+				enqueue(msgs, "-observatory-");
+				enqueue(msgs, "fortune: never forget where you came from");
 				break;
 		}
 

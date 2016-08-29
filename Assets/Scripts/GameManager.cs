@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour, ITickable {
 
 	public Text versionText;
 
-	private Vector3 colorCollected = new Vector3();
+	public Vector3 colorCollected = new Vector3();
 	public Vector3 totalColors = new Vector3();
 
 	public SoundBank sounds;
