@@ -120,17 +120,17 @@ public class ViewPoint : MonoBehaviour
 			case Message.Center:
 				enqueue(msgs, "-research center-");
 				string status = "chromatic reconstruction status: ";
-				for (int i = 0; i < collected.x; ++i)
+				for (int i = 0; i < total.x; ++i)
 				{
-					status += i < total.x ? "R" : "r";
+					status += i < collected.x ? "R" : "r";
 				}
-				for (int i = 0; i < collected.y; ++i)
+				for (int i = 0; i < total.y; ++i)
 				{
-					status += i < total.y ? "G" : "g";
+					status += i < collected.y ? "G" : "g";
 				}
-				for (int i = 0; i < collected.z; ++i)
+				for (int i = 0; i < total.z; ++i)
 				{
-					status += i < total.z ? "B" : "r";
+					status += i < collected.z ? "B" : "r";
 
 				}
 				enqueue(msgs, status);

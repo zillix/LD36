@@ -44,6 +44,8 @@ public class PlayerController : MonoBehaviour, ITickable {
 	public int DropDeathFrames = 60;
 	private int fallingFrames = 0;
 
+	private float respawnTimeHeld = 0;
+
 	private int collapsedFrames = 0;
 	public bool IsCollapsed { get; set; }
 
@@ -79,11 +81,6 @@ public class PlayerController : MonoBehaviour, ITickable {
 				GameManager.instance.mainCamera.Flash(Color.red);
 			}
 
-			if (Input.GetKeyDown(KeyCode.R))
-			{
-				respawn();
-			}
-
 			if (Input.GetKeyDown(KeyCode.T))
 			{
 				GameManager.instance.mainCamera.Rotate = !GameManager.instance.mainCamera.Rotate;
@@ -114,6 +111,21 @@ public class PlayerController : MonoBehaviour, ITickable {
 			}
 
 
+		}
+
+		if (Input.GetKey(KeyCode.R))
+		{
+			respawnTimeHeld += Time.fixedDeltaTime;
+			if (respawnTimeHeld > 5)
+			{
+				Physics.Position = GameObject.Find("Spawn").transform.position;
+				Physics.SetUp(Vector3.up);
+				Physics.SetVelocity(Vector3.zero);
+			}
+		}
+		else
+		{
+			respawnTimeHeld = 0;
 		}
 
 		if (IsOutside

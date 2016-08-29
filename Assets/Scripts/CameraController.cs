@@ -52,6 +52,8 @@ public class CameraController : MonoBehaviour, ITickable {
 	public static float COLOR_SPEED = .5f;
 	public int increasingColorIndex = 1;
 
+	public int respawnSpeedUp = 0;
+
 
 
 	// Use this for initialization
@@ -78,6 +80,10 @@ public class CameraController : MonoBehaviour, ITickable {
 	{
 		hasStartedGame = true;
 		SetFilterColor(Color.black);
+	}
+	public void onRespawn()
+	{
+		respawnSpeedUp = 30;
 	}
 
 	// Update is called once per frame
