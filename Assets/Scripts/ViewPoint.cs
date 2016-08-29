@@ -39,7 +39,7 @@ public class ViewPoint : MonoBehaviour
 		{
 			if (!displayedMessage && !GameManager.instance.text.isBusy)
 			{
-				//GameManager.instance.text.enqueue(getMessage(message));
+				GameManager.instance.text.enqueue(getMessage(message));
 			}
 
 			displayedMessage = true;
