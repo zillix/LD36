@@ -39,7 +39,7 @@ public class ViewPoint : MonoBehaviour
 		{
 			if (!displayedMessage && !GameManager.instance.text.isBusy)
 			{
-				GameManager.instance.text.enqueue(getMessage(message));
+				//GameManager.instance.text.enqueue(getMessage(message));
 			}
 
 			displayedMessage = true;
@@ -58,7 +58,7 @@ public class ViewPoint : MonoBehaviour
 			float delta = 1 - scale;
 			scale = 1 + delta / 4;
 		}
-		Vector3 targetScale = Vector3.one * scale * CollectDist * 2 * .2f;//.59f;
+		Vector3 targetScale = Vector3.one * scale * CollectDist * 2 * .35f;//.59f;
 		targetScale.y = .2f;
 		transform.localScale = targetScale;
 
@@ -115,7 +115,8 @@ public class ViewPoint : MonoBehaviour
 				break;
 			case Message.Intro:
 				enqueue(msgs, "-captain's quarters-");
-				enqueue(msgs, "status: happily concerned");
+				enqueue(msgs, "status: excited for adventure!");
+				enqueue(msgs, "uncertain how to find it");
 				break;
 			case Message.Center:
 				enqueue(msgs, "-research center-");
@@ -130,14 +131,14 @@ public class ViewPoint : MonoBehaviour
 				}
 				for (int i = 0; i < total.z; ++i)
 				{
-					status += i < collected.z ? "B" : "r";
+					status += i < collected.z ? "B" : "b";
 
 				}
 				enqueue(msgs, status);
 				break;
 			case Message.Flip:
 				enqueue(msgs, "-brig-");
-				enqueue(msgs, "epiphany status: in progress");
+				enqueue(msgs, "status: epiphany in progress");
 				break;
 			case Message.Loop:
 				enqueue(msgs, "-cargo hold-");
@@ -185,6 +186,7 @@ public class ViewPoint : MonoBehaviour
 				enqueue(msgs, "-departure chamber-");
 				enqueue(msgs, "disengaging...", GameManager.instance.TriggerEndGame);
 				enqueue(msgs, "undocking status: success");
+				enqueue(msgs, "adventure status: complete");
 				enqueue(msgs, ackStatus);
 				break;
 			/*case Message.ShipSecret:

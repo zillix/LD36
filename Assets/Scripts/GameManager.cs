@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour, ITickable {
 	public static int FPS = 60;
 
-	public static bool DEBUG = true;
+	public static bool DEBUG = false;
 
 	public static GameManager instance;
 
@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour, ITickable {
 		}
 
 		sounds = GameObject.Find("SoundBank").GetComponent<SoundBank>();
+		versionText.text = version;
 	}
 	
 
@@ -104,6 +105,11 @@ public class GameManager : MonoBehaviour, ITickable {
 		{
 			fpsText.text = "FPS: " + fpsCounter.FPS;
 			frameText.text = "Current Frame: " + frameController.currentFrame;
+		}
+		else
+		{
+			fpsText.text = "";
+			frameText.text = "";
 		}
 	}
 
