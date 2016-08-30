@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour, ITickable {
 	public TextManager text;
 	public Text zillixText;
 
-	public string version = "v0.35";
+	public string version = "v0.36";
 	public float versionCountdown = 15f;
 
 	public FrameController frameController;
@@ -91,6 +91,8 @@ public class GameManager : MonoBehaviour, ITickable {
 			zillixColor.a -= Time.fixedDeltaTime;
 			zillixText.color = zillixColor;
 
+			versionText.text = "";
+
 			
 		}
 		else if (Input.anyKeyDown)
@@ -133,7 +135,7 @@ public class GameManager : MonoBehaviour, ITickable {
 
 	public void CollectColor(ColorType color)
 	{
-		sounds.player.PlayOneShot(sounds.collectColor);
+		sounds.player.PlayOneShot(sounds.collectColor, .7f);
 
 		switch (color)
 		{

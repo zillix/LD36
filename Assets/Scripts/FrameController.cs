@@ -8,6 +8,8 @@ public class FrameController : MonoBehaviour {
 	float lastFrameTime = 0;
 	public GameManager game;
 
+	public static float deltaTime = 0;
+
 	public bool paused = false;
 
 	public int maxFrames = 5;
@@ -19,6 +21,8 @@ public class FrameController : MonoBehaviour {
 
 	public void Update()
 	{
+		deltaTime = Time.fixedDeltaTime;
+
 		if (!paused)
 		{
 			int framesToTick = (int)((Time.time - lastFrameTime) * GameManager.FPS);

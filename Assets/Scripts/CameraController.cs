@@ -86,7 +86,6 @@ public class CameraController : MonoBehaviour, ITickable {
 		respawnSpeedUp = 30;
 	}
 
-	// Update is called once per frame
 	public void TickFrame()
 	{
 

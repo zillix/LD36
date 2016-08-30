@@ -130,7 +130,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			dropFrames--;
 			if (dropFrames < 0)
 			{
-				Velocity.y += -DropAcceleration *Time.fixedDeltaTime;
+				Velocity.y += -DropAcceleration *FrameController.deltaTime;
 			}
 		}
 
@@ -146,18 +146,18 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 		{
 			if (IsGrounded)
 			{
-				Velocity.x += GroundGravity * gravityUp.x * Time.fixedDeltaTime;
-				Velocity.y += GroundGravity * gravityUp.y * Time.fixedDeltaTime;
+				Velocity.x += GroundGravity * gravityUp.x * FrameController.deltaTime;
+				Velocity.y += GroundGravity * gravityUp.y * FrameController.deltaTime;
 			}
 			else
 			{
-				Velocity.x += AirGravity * gravityUp.x * Time.fixedDeltaTime;
-				Velocity.y += AirGravity * gravityUp.y * Time.fixedDeltaTime;
+				Velocity.x += AirGravity * gravityUp.x * FrameController.deltaTime;
+				Velocity.y += AirGravity * gravityUp.y * FrameController.deltaTime;
 			}
 		}
 
-		Velocity.x += acceleration.x * Right.x * Time.fixedDeltaTime;
-		Velocity.y += acceleration.x * Right.y * Time.fixedDeltaTime;
+		Velocity.x += acceleration.x * Right.x * FrameController.deltaTime;
+		Velocity.y += acceleration.x * Right.y * FrameController.deltaTime;
 
 		float rightDot = Vector3.Dot(Velocity, Right);
 
@@ -197,19 +197,19 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 			if (rightDot > 0)
 			{
 				float upDot = Vector3.Dot(Velocity, Up);
-				Velocity = upDot * Up + (Vector3)(Mathf.Max(0, rightDot - Friction.x * Time.fixedDeltaTime) * Right);
+				Velocity = upDot * Up + (Vector3)(Mathf.Max(0, rightDot - Friction.x * FrameController.deltaTime) * Right);
 			}
 			else if (rightDot < 0)
 			{
 				float upDot = Vector3.Dot(Velocity, Up);
-				Velocity = upDot * Up + (Vector3)(Mathf.Min(0, rightDot + Friction.x * Time.fixedDeltaTime) * Right);
+				Velocity = upDot * Up + (Vector3)(Mathf.Min(0, rightDot + Friction.x * FrameController.deltaTime) * Right);
 			}
 		}
 
 		// Don't check feet if moving up
 		if (Vector3.Dot(Velocity, Up) < .1f)
 		{
-			float raycastDist = Velocity.magnitude * Time.fixedDeltaTime + RaycastDist;
+			float raycastDist = Velocity.magnitude * FrameController.deltaTime + RaycastDist;
 			RaycastHit2D hit = getHighestRaycastHit(Position, Up * -1, raycastDist, allTerrainMask);
 			if (hit.collider != null)
 			{
@@ -379,7 +379,7 @@ public class PlayerPhysicsController : MonoBehaviour, ITickable {
 	private void movePosition()
 	{
 		float cachedVelocityMagnitude = Velocity.magnitude;
-		float totalDistToTravel = Velocity.magnitude * Time.fixedDeltaTime;
+		float totalDistToTravel = Velocity.magnitude * FrameController.deltaTime;
 		float distRemainingToTravel = totalDistToTravel;
 		
 		int maxIterations = 10;

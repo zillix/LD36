@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		if (Input.GetKey(KeyCode.R))
 		{
-			respawnTimeHeld += Time.fixedDeltaTime;
+			respawnTimeHeld += FrameController.deltaTime;
 			if (respawnTimeHeld > 5)
 			{
 				Physics.Position = GameObject.Find("Spawn").transform.position;
@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 					&& Vector3.Dot(Physics.Velocity, Physics.Up * -1) < 2f))
 			&& input.GetButtonDown(Button.Up))
 		{
-			sounds.player.PlayOneShot(sounds.jump);
+			sounds.player.PlayOneShot(sounds.jump, .5f);
 			Physics.SetVelocity(RotationUp * Physics.JumpSpeed);
 			Physics.IsGrounded = false;
 
@@ -180,7 +180,6 @@ public class PlayerController : MonoBehaviour, ITickable {
 	
 	// Update is called once per frame
 	public void TickFrame () {
-
 		bool invertControls = temporarilyInvertingControls;
 
 		if (!Physics.IsDropping && !IsCollapsed
@@ -256,7 +255,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 				if (!IsFallingDead)
 				{
 					IsFallingDead = true;
-					sounds.player.PlayOneShot(sounds.fallToDeath);
+					sounds.player.PlayOneShot(sounds.fallToDeath, .3f);
 
 				}
 				if (fallingFrames >= deathFallFrames + ContinueDeathFallFrames)
@@ -285,11 +284,11 @@ public class PlayerController : MonoBehaviour, ITickable {
 				Physics.DropShakeFrames,
 				Physics.DropShakeMagnitude);
 
-			sounds.player.PlayOneShot(sounds.heavyLand);
+			sounds.player.PlayOneShot(sounds.heavyLand, .3f);
 		}
 		else if (GameManager.instance.hasStartedGame)
 		{
-			sounds.player.PlayOneShot(sounds.land);
+			sounds.player.PlayOneShot(sounds.land, 1.2f);
 		}
 	}
 
@@ -302,7 +301,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 	private void rotate(float speed)
 	{
 		float targetAngle = MathUtil.VectorToAngle(RotationUp) - 90;
-		currentAngle = MathUtil.RotateAngle(currentAngle, targetAngle, speed * Time.fixedDeltaTime);
+		currentAngle = MathUtil.RotateAngle(currentAngle, targetAngle, speed * FrameController.deltaTime);
 
 
 		Quaternion rotation = Quaternion.Euler(0, 0, currentAngle);
@@ -318,7 +317,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 		fallingFrames = 0;
 		IsFallingDead = false;
 		IsCollapsed = false;
-		sounds.player.PlayOneShot(sounds.respawn);
+		sounds.player.PlayOneShot(sounds.respawn, .6f);
 	}
 
 	public Vector3 RotationUp
@@ -343,7 +342,7 @@ public class PlayerController : MonoBehaviour, ITickable {
 	public void CollectPowerUp(PowerUpType type)
 	{
 
-		sounds.player.PlayOneShot(sounds.collectPowerUp);
+		sounds.player.PlayOneShot(sounds.collectPowerUp, .7f);
 		switch (type)
 		{
 			case PowerUpType.Rotate:
