@@ -110,6 +110,13 @@ public class PlayerController : MonoBehaviour, ITickable {
 				Physics.JumpSpeed *= .5f;
 			}
 
+			if (Input.GetKeyDown(KeyCode.C))
+			{
+				GameManager.instance.CollectColor(ColorType.Red);
+				GameManager.instance.CollectColor(ColorType.Blue);
+				GameManager.instance.CollectColor(ColorType.Green);
+			}
+
 
 		}
 
@@ -147,7 +154,8 @@ public class PlayerController : MonoBehaviour, ITickable {
 
 		bool didFlip = false;
 		if (Physics.IsGrounded
-				&& input.GetButtonDown(Button.Flip))
+				&& input.GetButtonDown(Button.Flip)
+				&& !GameManager.instance.mainCamera.IsGameOver)
 		{
 			didFlip = Physics.Flip();
 
@@ -157,14 +165,14 @@ public class PlayerController : MonoBehaviour, ITickable {
 		if (didFlip)
 		{
 
-			sounds.player.PlayOneShot(sounds.flip);
+			sounds.player.PlayOneShot(sounds.flip, .6f);
 			temporarilyInvertingControls = true;
 			rotate(10000);
 			facing = facing == Direction.Left ? Direction.Right : Direction.Left;
 			Side = IsInside ? Side.Outside : Side.Inside;
 
 		}
-		else if (input.GetButtonDown(Button.Flip) && !IsInside)
+		else if (input.GetButtonDown(Button.Flip) && !IsInside && !IsCollapsed && !IsFallingDead)
 		{
 			bool didDrop = Physics.BeginDrop();
 			if (didDrop)

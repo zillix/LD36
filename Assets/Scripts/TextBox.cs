@@ -67,7 +67,7 @@ public class TextBox : MonoBehaviour, ITextBox{
 	}
 	public void show()
 	{
-		setAlpha (.7f);
+		setAlpha (.85f);
 	}
 
 	private void setAlpha(float value)

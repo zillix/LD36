@@ -41,6 +41,10 @@ public class GameManager : MonoBehaviour, ITickable {
 
 	public bool hasStartedGame { get; set; }
 
+	public GameObject blueBlocker;
+	public GameObject redBlocker;
+	public GameObject greenBlocker;
+
 	public void Awake()
 	{
 		GameManager.instance = this;
@@ -140,12 +144,15 @@ public class GameManager : MonoBehaviour, ITickable {
 		switch (color)
 		{
 			case ColorType.Red:
+				redBlocker.SetActive(false);
 				colorCollected.x++;
 				break;
 			case ColorType.Green:
+				greenBlocker.SetActive(false);
 				colorCollected.y++;
 				break;
 			case ColorType.Blue:
+				blueBlocker.SetActive(false);
 				colorCollected.z++;
 				break;
 		}

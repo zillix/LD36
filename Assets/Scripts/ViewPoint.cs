@@ -5,6 +5,7 @@ using System;
 public class ViewPoint : MonoBehaviour
 {
 	public float CollectDist = 2f;
+	public float OverrideOrthoDist = 0;
 	private PlayerController player;
 
 	public Message message;
@@ -164,30 +165,9 @@ public class ViewPoint : MonoBehaviour
 				enqueue(msgs, "adventure failed to start");
 				break;
 			case Message.Victory:
-				int totalAmt = (int)( total.x + total.y + total.z);
-				int collectedAmt = (int)( collected.x + collected.y + collected.z);
-				string ackStatus = "chromatic acknowledgement status:";
-				if (collectedAmt == 0)
-				{
-					ackStatus += " in denial";
-				}
-				else if (collectedAmt < totalAmt / 2)
-				{
-					ackStatus += " adequate";
-				}
-				else if (collectedAmt < totalAmt)
-				{
-					ackStatus += " vivid";
-                }
-				else
-				{
-					ackStatus += " fully accepted";
-				}
-				enqueue(msgs, "-departure chamber-");
-				enqueue(msgs, "disengaging...", GameManager.instance.TriggerEndGame);
-				enqueue(msgs, "undocking status: success");
-				enqueue(msgs, "adventure status: complete");
-				enqueue(msgs, ackStatus);
+				enqueue(msgs, "-empty chromoctogon container-");
+				enqueue(msgs, "thx for playing!");
+				enqueue(msgs, "-zillix");
 				break;
 			/*case Message.ShipSecret:
 				enqueue(msgs, "ship secret");
@@ -203,6 +183,44 @@ public class ViewPoint : MonoBehaviour
 			case Message.SecretDrop:
 				enqueue(msgs, "-observatory-");
 				enqueue(msgs, "fortune: never forget where you came from");
+				break;
+			case Message.ShipEntrance:
+				enqueue(msgs, "alert: intruder detected");
+				enqueue(msgs, "alert: intruder ignored");
+				break;
+			case Message.VictoryConfirm:
+				if (!GameManager.instance.mainCamera.IsGameOver)
+				{
+					enqueue(msgs, "-chromoctogon ejection chamber-");
+				}
+
+				if (collected.x == 0 || collected.y == 0 || collected.z == 0)
+				{
+					enqueue(msgs, "error: insufficient chromatic diversity for departure");
+					enqueue(msgs, "return when requirements have been fulfilled");
+				}
+				else if (!GameManager.instance.mainCamera.IsGameOver)
+				{
+					enqueue(msgs, "engage departure? enter chromoctogon to confirm");
+					enqueue(msgs, "<waiting for confirmation...>",
+						delegate ()
+						{
+							List<PlayText> msgs2 = new List<PlayText>();
+
+							if (player.IsInside)
+							{
+								enqueue(msgs2, "disengaging...", GameManager.instance.TriggerEndGame);
+								enqueue(msgs2, "undocking status: success");
+								enqueue(msgs2, "adventure status: complete");
+							}
+							else
+							{
+								enqueue(msgs2, "departure aborted");
+							}
+
+							GameManager.instance.text.enqueue(msgs2);
+                        });
+				}
 				break;
 		}
 
@@ -239,5 +257,7 @@ public enum Message
 	SecretDrop,
 	ShipSecret,
 	SecretAlcove,
-	SecretStart
+	SecretStart,
+	ShipEntrance,
+	VictoryConfirm
 }

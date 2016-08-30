@@ -36,6 +36,7 @@ public class CameraController : MonoBehaviour, ITickable {
 	private ColorFilter filter;
 
 	private bool onViewPoint = false;
+	private float overrideOrthDist = 0;
 
 	ViewPoint[] viewPoints;
 
@@ -145,6 +146,7 @@ public class CameraController : MonoBehaviour, ITickable {
 			if (Vector2.Distance(player.Physics.Center, point.transform.position) < point.CollectDist)
 			{
 				onViewPoint = true;
+				overrideOrthDist = point.OverrideOrthoDist;
 				break;
 			}
 		}
@@ -201,7 +203,7 @@ public class CameraController : MonoBehaviour, ITickable {
 		float targetOrthographicSize = player.IsInside ? InsideOrtho : OutsideOrtho;
 		if (onViewPoint)
 		{
-			targetOrthographicSize = ViewPointOrtho;
+			targetOrthographicSize = overrideOrthDist == 0 ? ViewPointOrtho : overrideOrthDist;
 		}
 		if (IsGameOver)
 		{
